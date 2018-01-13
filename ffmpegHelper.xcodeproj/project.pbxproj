@@ -12,6 +12,7 @@
 		CE0010D12003E531009A1BD4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE0010D02003E531009A1BD4 /* Assets.xcassets */; };
 		CE0010D42003E532009A1BD4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0010D22003E532009A1BD4 /* MainMenu.xib */; };
 		CE05FB7020092F8400D59CAA /* runScript.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE05FB6F20092F8400D59CAA /* runScript.scpt */; };
+		CE356C10200AABB6001743AF /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = CE356C0F200AABB6001743AF /* README.md */; };
 		CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */; };
 		CE3FA9692007DE69002C5B7B /* FFHFileInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3FA9672007DE69002C5B7B /* FFHFileInfo.xib */; };
 /* End PBXBuildFile section */
@@ -25,6 +26,7 @@
 		CE0010D32003E532009A1BD4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		CE0010D52003E532009A1BD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE05FB6F20092F8400D59CAA /* runScript.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runScript.scpt; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.applescript; };
+		CE356C0F200AABB6001743AF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CE3FA9652007DE69002C5B7B /* FFHFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHFileInfo.h; sourceTree = "<group>"; };
 		CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHFileInfo.m; sourceTree = "<group>"; };
 		CE3FA9672007DE69002C5B7B /* FFHFileInfo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFHFileInfo.xib; sourceTree = "<group>"; };
@@ -44,6 +46,7 @@
 		CE0010BE2003E531009A1BD4 = {
 			isa = PBXGroup;
 			children = (
+				CE356C0F200AABB6001743AF /* README.md */,
 				CE0010C92003E531009A1BD4 /* ffmpegHelper */,
 				CE0010C82003E531009A1BD4 /* Products */,
 			);
@@ -155,6 +158,7 @@
 			files = (
 				CE0010CF2003E531009A1BD4 /* main.m in Sources */,
 				CE0010CC2003E531009A1BD4 /* FFHAppDelegate.m in Sources */,
+				CE356C10200AABB6001743AF /* README.md in Sources */,
 				CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
