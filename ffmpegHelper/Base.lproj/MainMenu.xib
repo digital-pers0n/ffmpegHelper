@@ -709,17 +709,18 @@
             </items>
         </menu>
         <window title="ffmpegHelper" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" texturedBackground="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="33" y="253" width="640" height="480"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1366" height="768"/>
+            <value key="minSize" type="size" width="640" height="480"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="640" height="480"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView borderType="line" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="HfP-Tu-cG5">
                         <rect key="frame" x="20" y="20" width="600" height="281"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="pVP-oV-cZg">
                             <rect key="frame" x="1" y="1" width="598" height="279"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -756,36 +757,24 @@
                     </scrollView>
                     <customView id="VKB-af-A0r">
                         <rect key="frame" x="0.0" y="309" width="640" height="171"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField verticalHuggingPriority="750" id="jrD-eK-fp4">
-                                <rect key="frame" x="420" y="0.0" width="96" height="19"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="end" drawsBackground="YES" id="4fz-sk-g9a">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="6wf-Ml-wFb">
+                                <rect key="frame" x="18" y="157" width="604" height="14"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" title="File Path" id="iZ3-Y4-XgU">
                                     <font key="font" metaFont="smallSystem"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
-                                <connections>
-                                    <action selector="endTimeTextFieldChanged:" target="Voe-Tx-rLC" id="tYk-hH-fg0"/>
-                                </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="io9-B8-3q6">
                                 <rect key="frame" x="20" y="111" width="600" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Output File" drawsBackground="YES" id="lYX-yQ-nz3">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="a6W-9k-qDQ">
-                                <rect key="frame" x="314" y="94" width="37" height="14"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="other:" id="8Cl-9D-bXI">
-                                    <font key="font" metaFont="smallSystem"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                             <textField toolTip=" -c:v libvpx-vp9  -b:v 2100k -bt 1280k -maxrate 5200k -bufsize 3200k" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Qae-Ha-hLM">
@@ -797,30 +786,9 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="gei-nD-Gu6">
-                                <rect key="frame" x="20" y="0.0" width="282" height="19"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-c:a libvorbis -b:a 128k -aq 9  -vol 1024" drawsBackground="YES" id="KHd-pO-wA6">
-                                    <font key="font" metaFont="smallSystem"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                                <connections>
-                                    <action selector="audioOptionsTextFieldChanged:" target="Voe-Tx-rLC" id="6Pv-d0-tQ5"/>
-                                </connections>
-                            </textField>
-                            <textField toolTip="  -c:a libvorbis -b:a 128k -aq 9  -vol 1024" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="ISa-5U-ChJ">
-                                <rect key="frame" x="314" y="18" width="31" height="14"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="time:" id="rI5-Yo-v7E">
-                                    <font key="font" metaFont="smallSystem"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="ukf-yC-Ul8">
                                 <rect key="frame" x="20" y="34" width="282" height="61"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-c:v libvpx-vp9  -b:v 2100k -bt 1280k -maxrate 5200k -bufsize 3200k -s hd720 -r 24" drawsBackground="YES" id="1tK-Zz-XqQ">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -828,30 +796,6 @@
                                 </textFieldCell>
                                 <connections>
                                     <action selector="videoOptionsTextFieldChanged:" target="Voe-Tx-rLC" id="mtj-12-US9"/>
-                                </connections>
-                            </textField>
-                            <textField verticalHuggingPriority="750" id="fMq-ki-ryf">
-                                <rect key="frame" x="316" y="0.0" width="96" height="19"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-ss 32" drawsBackground="YES" id="xu9-MS-doz">
-                                    <font key="font" metaFont="smallSystem"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                                <connections>
-                                    <action selector="startTimeTextFieldChanged:" target="Voe-Tx-rLC" id="J69-mT-rnE"/>
-                                </connections>
-                            </textField>
-                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="eSx-uW-rNY">
-                                <rect key="frame" x="316" y="34" width="304" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-trellis 1 -me_range 16 -i_qfactor 0.71 -b_strategy 1 -qmax 50 -qmin 0 -qdiff 4 -sn -y -threads 2" drawsBackground="YES" id="F39-3u-MJE">
-                                    <font key="font" metaFont="smallSystem"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                                <connections>
-                                    <action selector="otherOptionsTextFieldChanged:" target="Voe-Tx-rLC" id="69r-Vh-Sk8"/>
                                 </connections>
                             </textField>
                             <textField toolTip="  -c:a libvorbis -b:a 128k -aq 9  -vol 1024" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Q4y-a6-4jg">
@@ -863,30 +807,42 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" id="XmH-Ms-X5K">
-                                <rect key="frame" x="524" y="0.0" width="96" height="19"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-t 16" drawsBackground="YES" id="Z2e-w3-BSE">
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="gei-nD-Gu6">
+                                <rect key="frame" x="20" y="0.0" width="282" height="19"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-c:a libvorbis -b:a 128k -aq 9  -vol 1024" drawsBackground="YES" id="KHd-pO-wA6">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
-                                    <action selector="lengthTimeTextFieldChanged:" target="Voe-Tx-rLC" id="HHL-Ba-aLQ"/>
+                                    <action selector="audioOptionsTextFieldChanged:" target="Voe-Tx-rLC" id="6Pv-d0-tQ5"/>
                                 </connections>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="6wf-Ml-wFb">
-                                <rect key="frame" x="18" y="157" width="604" height="14"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" title="File Path" id="iZ3-Y4-XgU">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="a6W-9k-qDQ">
+                                <rect key="frame" x="314" y="94" width="308" height="14"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="other:" id="8Cl-9D-bXI">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="eSx-uW-rNY">
+                                <rect key="frame" x="316" y="34" width="304" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-trellis 1 -me_range 16 -i_qfactor 0.71 -b_strategy 1 -qmax 50 -qmin 0 -qdiff 4 -sn -y -threads 2" drawsBackground="YES" id="F39-3u-MJE">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <action selector="otherOptionsTextFieldChanged:" target="Voe-Tx-rLC" id="69r-Vh-Sk8"/>
+                                </connections>
+                            </textField>
                             <textField verticalHuggingPriority="750" id="bSq-9T-0rh">
                                 <rect key="frame" x="316" y="76" width="304" height="19"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-map 0:0 -map 0:4 -cpu-used 1 -ac 2" drawsBackground="YES" id="qb7-ec-ase">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -896,11 +852,56 @@
                                     <action selector="miscOptionsTextFieldChanged:" target="Voe-Tx-rLC" id="jGh-IS-pfV"/>
                                 </connections>
                             </textField>
+                            <textField toolTip="  -c:a libvorbis -b:a 128k -aq 9  -vol 1024" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="ISa-5U-ChJ">
+                                <rect key="frame" x="314" y="18" width="308" height="14"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="time:" id="rI5-Yo-v7E">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" id="fMq-ki-ryf">
+                                <rect key="frame" x="316" y="0.0" width="96" height="19"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-ss 32" drawsBackground="YES" id="xu9-MS-doz">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <action selector="startTimeTextFieldChanged:" target="Voe-Tx-rLC" id="J69-mT-rnE"/>
+                                </connections>
+                            </textField>
+                            <textField verticalHuggingPriority="750" id="jrD-eK-fp4">
+                                <rect key="frame" x="420" y="0.0" width="96" height="19"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="end" drawsBackground="YES" id="4fz-sk-g9a">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <action selector="endTimeTextFieldChanged:" target="Voe-Tx-rLC" id="tYk-hH-fg0"/>
+                                </connections>
+                            </textField>
+                            <textField verticalHuggingPriority="750" id="XmH-Ms-X5K">
+                                <rect key="frame" x="524" y="0.0" width="96" height="19"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-t 16" drawsBackground="YES" id="Z2e-w3-BSE">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <action selector="lengthTimeTextFieldChanged:" target="Voe-Tx-rLC" id="HHL-Ba-aLQ"/>
+                                </connections>
+                            </textField>
                         </subviews>
                     </customView>
                     <customView id="wbF-9m-xe4" customClass="FFHDragView">
                         <rect key="frame" x="0.0" y="307" width="640" height="172"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Psn-6B-uBM">
                                 <rect key="frame" x="218" y="64" width="205" height="45"/>
@@ -915,7 +916,7 @@
                     </customView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="464" y="379"/>
+            <point key="canvasLocation" x="539" y="323"/>
         </window>
     </objects>
 </document>

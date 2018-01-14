@@ -7,4 +7,4 @@ Preview with mpv <br>
 Send a command line script to iTerm <br>
 
 # TODO:
-Profiles <br>
+Metadata Editor <br>

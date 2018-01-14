@@ -129,9 +129,8 @@
 
 @end
 
-const NSString *FFHScriptPath = @"~/Library/Application Support/ffmpegHelper/convert.sh";
 
-const NSString *FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" -c:v libvpx-vp9 -pass 1 $LENGTH -an -f null -";
+const NSString *FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
 const NSString *FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS $TWOPASS $LENGTH \"$OUTPUT\"";
 
 const NSString *FFHVideoOptionsKey = @"Video";
@@ -141,8 +140,11 @@ const NSString *FFHAudioOptionsKey = @"Audio";
 const NSString *FFHStartTimeKey = @"StartTime";
 const NSString *FFHEndTimeKey = @"EndTime";
 const NSString *FFHLengthTimeKey = @"LengthTime";
+const NSString *FFHContainerKey = @"Container";
 
 const NSString *FFHMenuTwoPassKey = @"TwoPassEncoding";
+
+const NSString *FFHUserPresetPath = @"~/Library/Application Support/ffmpegHelper/userPreset.plist";
 
 typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     FFHMenuOption2PassTag,
@@ -171,6 +173,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     FFHFileInfo *_fileInfoWindow;
     
     NSString *_scriptPath;
+    NSDictionary *_mpvOptions;
 }
 
 - (IBAction)videoOptionsTextFieldChanged:(NSTextField *)sender;
@@ -203,9 +206,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         [shared createDirectoryAtURL:appSupp withIntermediateDirectories:NO attributes:nil error:nil];
     }
     _scriptPath = [path stringByAppendingPathComponent:@"command.sh"];
-    NSLog(@"%@", _scriptPath);
     [shared createFileAtPath:_scriptPath contents:nil attributes:nil];
     chmod(_scriptPath.UTF8String,  S_IRWXU);
+    _mpvOptions = @{NSWorkspaceLaunchConfigurationArguments:@[@"--loop=yes", @"--osd-fractions", @"--osd-level=3", path]};
+    
     _ffmpegCmdOptions = [[[NSUserDefaults standardUserDefaults] objectForKey:DEFAULTS_KEY] mutableCopy];
     if (!_ffmpegCmdOptions) {
         NSString *other, *nt = [NSString stringWithFormat:@"-threads %lu", [NSProcessInfo processInfo].processorCount];
@@ -216,7 +220,12 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                               FFHMiscOptionsKey: @"",
                               FFHStartTimeKey: @"",
                               FFHEndTimeKey: @"",
-                              FFHLengthTimeKey: @""}.mutableCopy;
+                              FFHLengthTimeKey: @"",
+                              FFHContainerKey: @"webm"}.mutableCopy;
+    } else {
+        if (!cmd(FFHContainerKey)) {
+            cmd(FFHContainerKey) = @"webm";
+        }
     }
     _videoOptionsTextField.stringValue = cmd(FFHVideoOptionsKey);
     _audioOptionsTextField.stringValue = cmd(FFHAudioOptionsKey);
@@ -235,14 +244,35 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         _twoPassEncoding = [[NSUserDefaults standardUserDefaults] boolForKey:(NSString *)FFHMenuTwoPassKey];
         item.state = _twoPassEncoding;
         [menu addItem:item];
-
+        
+        [menu addItem:[NSMenuItem separatorItem]];
+        action = @selector(presetsMenuItemClicked:);
+        item = [[NSMenuItem alloc] initWithTitle:@"Presets" action:nil keyEquivalent:@""];
+        NSMenu *presetsMenu = [[NSMenu alloc] init];
+        item.submenu = presetsMenu;
+        [menu addItem:item];
+        
+        NSArray *presets = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"presets" ofType:@"plist"]];
+        for (NSDictionary *obj in presets) {
+            item = [[NSMenuItem alloc] initWithTitle:obj[@"Name"] action:action keyEquivalent:@""];
+            item.target = self;
+            item.representedObject = obj;
+            [presetsMenu addItem:item];
+        }
+        [presetsMenu addItem:[NSMenuItem separatorItem]];
+        item = [[NSMenuItem alloc] initWithTitle:@"Save Preset" action:@selector(saveUserPresetMenuItemClicked:) keyEquivalent:@""];
+        item.target = self;
+        [presetsMenu addItem:item];
+        
+        item = [[NSMenuItem alloc] initWithTitle:@"Load Preset" action:@selector(loadUserPresetMenuItemClicked:) keyEquivalent:@""];
+        item.target = self;
+        [presetsMenu addItem:item];
     }
     
     _dragView.delegate = self;
     _dropFileFeedbackTextField.hidden = YES;
     _fileInfoWindow = [[FFHFileInfo alloc] init];
     [self _updateCommandTextView];
-
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -299,11 +329,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     NSWorkspace *sharedWorkspace = [NSWorkspace sharedWorkspace];
     NSURL *appURL = [sharedWorkspace URLForApplicationWithBundleIdentifier:@"io.mpv"];
     if (appURL) {
-        NSArray *args = @[@"--loop=yes", @"--osd-fractions", @"--osd-level=3", path];
         NSError *error = nil;
         [sharedWorkspace launchApplicationAtURL:appURL
                                         options:NSWorkspaceLaunchAsync | NSWorkspaceLaunchNewInstance
-                                  configuration:@{NSWorkspaceLaunchConfigurationArguments:args}
+                                  configuration:_mpvOptions
                                           error:&error];
         if (error) {
             NSLog(@"%s - App: %@\nError: %@", __PRETTY_FUNCTION__, appURL, error.localizedDescription);
@@ -323,8 +352,27 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     if (filename) {
         
         _filePathTextField.stringValue = filename;
+        NSString *container = cmd(FFHContainerKey);
+        time_t t = 0;
+        time(&t);
+        struct tm  stm;
+        struct tm *p = &stm;
+        p = localtime(&t);
+        stm = *p;
+        NSString *suffix = [NSString stringWithFormat:@"-%i_%.2i_%.2i-%.2i%.2i%.2i",
+                            stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec];
+        NSString *ext = filename.pathExtension;
         filename = filename.stringByDeletingPathExtension;
-        _outputFilePathTextField.stringValue = [filename stringByAppendingPathExtension:@"webm"];
+        filename = [filename stringByAppendingString:suffix];
+        
+        if (container.length) {
+            filename = [filename stringByAppendingPathExtension:container];
+        } else {
+            filename = [filename stringByAppendingPathExtension:ext];
+        }
+        _outputFilePathTextField.stringValue = filename;
+        [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
+        
     }
     [self _updateCommandTextView];
 }
@@ -418,7 +466,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     [convertScript appendString:_commandTextView.string];
     [convertScript writeToFile:_scriptPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     string = [string stringByReplacingOccurrencesOfString:@"%script%" withString:_scriptPath];
-    // NSString *string = [NSString stringWithFormat:@"tell application \"Terminal\" to do script \"%@\" ", _commandTextView.string];
     NSAppleScript *script = [[NSAppleScript alloc] initWithSource:string];
     [script executeAndReturnError:nil];
 }
@@ -440,6 +487,51 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     [self _updateCommandTextView];
 }
 
+- (void)loadUserPresetMenuItemClicked:(id)sender {
+    NSString *path = FFHUserPresetPath.stringByExpandingTildeInPath;
+    NSDictionary *obj = [[NSDictionary alloc] initWithContentsOfFile:path];
+    if (obj) {
+        _videoOptionsTextField.stringValue = obj[FFHVideoOptionsKey];
+        _audioOptionsTextField.stringValue = obj[FFHAudioOptionsKey];
+        _miscOptionsTextField.stringValue = obj[FFHMiscOptionsKey];
+        _otherOptionsTextField.stringValue = obj[FFHOtherOptionsKey];
+        cmd(FFHContainerKey) = obj[FFHContainerKey];
+        
+        [self videoOptionsTextFieldChanged:_videoOptionsTextField];
+        [self audioOptionsTextFieldChanged:_audioOptionsTextField];
+        [self miscOptionsTextFieldChanged:_miscOptionsTextField];
+        [self otherOptionsTextFieldChanged:_otherOptionsTextField];
+        [self _updateCommandTextView];
+    } else {
+        NSBeep();
+    }
+}
+
+- (void)saveUserPresetMenuItemClicked:(id)sender {
+    NSString *path = FFHUserPresetPath.stringByExpandingTildeInPath;
+    NSDictionary *preset = @{FFHVideoOptionsKey: _videoOptionsTextField.stringValue,
+                             FFHAudioOptionsKey: _audioOptionsTextField.stringValue,
+                             FFHOtherOptionsKey: _otherOptionsTextField.stringValue,
+                             FFHMiscOptionsKey: _miscOptionsTextField.stringValue,
+                             FFHContainerKey: cmd(FFHContainerKey)};
+    [preset writeToFile:path atomically:YES];
+}
+
+- (void)presetsMenuItemClicked:(NSMenuItem *)sender {
+    NSDictionary *obj = sender.representedObject;
+    _videoOptionsTextField.stringValue = obj[FFHVideoOptionsKey];
+    _audioOptionsTextField.stringValue = obj[FFHAudioOptionsKey];
+    _miscOptionsTextField.stringValue = obj[FFHMiscOptionsKey];
+    _otherOptionsTextField.stringValue = obj[FFHOtherOptionsKey];
+    cmd(FFHContainerKey) = obj[FFHContainerKey];
+    
+    [self videoOptionsTextFieldChanged:_videoOptionsTextField];
+    [self audioOptionsTextFieldChanged:_audioOptionsTextField];
+    [self miscOptionsTextFieldChanged:_miscOptionsTextField];
+    [self otherOptionsTextFieldChanged:_otherOptionsTextField];
+    [self _updateCommandTextView];
+}
+
 #pragma mark - Open File
 
 - (void)openDocument:(id)sender {
@@ -452,7 +544,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
             
             NSURL *url = openPanel.URL;
             [self didRecieveFilename:url.path];
-            [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:url];
+            //[[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:url];
         }
         
     }];
@@ -466,7 +558,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
     [_window makeKeyAndOrderFront:nil];
     [self didRecieveFilename:filename];
-    [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
+    
     return YES;
 }
 

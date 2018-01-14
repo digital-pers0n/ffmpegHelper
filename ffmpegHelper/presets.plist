@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Name</key>
+		<string>libvpx-vp9</string>
+		<key>Video</key>
+		<string>-c:v libvpx-vp9  -b:v 2100k -bt 1280k -maxrate 5200k -bufsize 3200k</string>
+		<key>Other</key>
+		<string>-trellis 1 -me_range 16 -i_qfactor 0.71 -b_strategy 1 -qmax 50 -qmin 0 -qdiff 4 -sn -y</string>
+		<key>Misc</key>
+		<string></string>
+		<key>Audio</key>
+		<string>-c:a libvorbis -b:a 128k -aq 9</string>
+		<key>Container</key>
+		<string>webm</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>libvpx</string>
+		<key>Video</key>
+		<string>-c:v libvpx  -b:v 2100k -bt 1280k -maxrate 5200k -bufsize 3200k</string>
+		<key>Other</key>
+		<string>-trellis 1 -me_range 16 -i_qfactor 0.71 -b_strategy 1 -qmax 50 -qmin 0 -qdiff 4 -sn -y</string>
+		<key>Misc</key>
+		<string></string>
+		<key>Audio</key>
+		<string>-c:a libvorbis -b:a 128k -aq 9</string>
+		<key>Container</key>
+		<string>webm</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>libx264</string>
+		<key>Video</key>
+		<string>-c:v libx264 -b:v 2100k -bt 1280k -maxrate 5200k -bufsize 3200k</string>
+		<key>Other</key>
+		<string>-trellis 0 -coder ac -subq 7 -me_range 16 -i_qfactor 0.71 -bf 3 -b_strategy 1 -refs 1 -partitions partb8x8+partp4x4+partp8x8+parti8x8 -flags +loop -me_method hex -direct-pred 1 -rc_lookahead 10 -qmin 3 -qmax 51 -qdiff 4 -qcomp 0.6 -crf 20 -weightb 1 -8x8dct 0 -fast-pskip 1 -b-pyramid 1 -sc_threshold 40</string>
+		<key>Misc</key>
+		<string></string>
+		<key>Audio</key>
+		<string>-c:a aac -b:a 128k -aq 9</string>
+		<key>Container</key>
+		<string>mp4</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>copy</string>
+		<key>Video</key>
+		<string>-c:v copy</string>
+		<key>Other</key>
+		<string></string>
+		<key>Misc</key>
+		<string></string>
+		<key>Audio</key>
+		<string>-c:a copy</string>
+	</dict>
+</array>
+</plist>

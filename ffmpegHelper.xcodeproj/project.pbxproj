@@ -12,9 +12,9 @@
 		CE0010D12003E531009A1BD4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE0010D02003E531009A1BD4 /* Assets.xcassets */; };
 		CE0010D42003E532009A1BD4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0010D22003E532009A1BD4 /* MainMenu.xib */; };
 		CE05FB7020092F8400D59CAA /* runScript.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE05FB6F20092F8400D59CAA /* runScript.scpt */; };
-		CE356C10200AABB6001743AF /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = CE356C0F200AABB6001743AF /* README.md */; };
 		CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */; };
 		CE3FA9692007DE69002C5B7B /* FFHFileInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3FA9672007DE69002C5B7B /* FFHFileInfo.xib */; };
+		CE9D286F200BC5CC0006FAF5 /* presets.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE9D286E200BC5CC0006FAF5 /* presets.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +30,7 @@
 		CE3FA9652007DE69002C5B7B /* FFHFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHFileInfo.h; sourceTree = "<group>"; };
 		CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHFileInfo.m; sourceTree = "<group>"; };
 		CE3FA9672007DE69002C5B7B /* FFHFileInfo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFHFileInfo.xib; sourceTree = "<group>"; };
+		CE9D286E200BC5CC0006FAF5 /* presets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = presets.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +82,7 @@
 			children = (
 				CE0010CE2003E531009A1BD4 /* main.m */,
 				CE05FB6F20092F8400D59CAA /* runScript.scpt */,
+				CE9D286E200BC5CC0006FAF5 /* presets.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -142,6 +144,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE9D286F200BC5CC0006FAF5 /* presets.plist in Resources */,
 				CE05FB7020092F8400D59CAA /* runScript.scpt in Resources */,
 				CE3FA9692007DE69002C5B7B /* FFHFileInfo.xib in Resources */,
 				CE0010D12003E531009A1BD4 /* Assets.xcassets in Resources */,
@@ -158,7 +161,6 @@
 			files = (
 				CE0010CF2003E531009A1BD4 /* main.m in Sources */,
 				CE0010CC2003E531009A1BD4 /* FFHAppDelegate.m in Sources */,
-				CE356C10200AABB6001743AF /* README.md in Sources */,
 				CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
