@@ -64,12 +64,12 @@
     _feedbackColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.04];
     _feedbackLineColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.48];
     _clearColor = [NSColor clearColor];
-    _feedbackFrame = self.bounds;
+ /*   _feedbackFrame = self.bounds;
     _feedbackFrame.origin.x +=20;
     _feedbackFrame.size.width -= 40;
     _feedbackFrame.origin.y += 4;
     _feedbackFrame.size.height -= 8;
-    _feedbackPath = [NSBezierPath bezierPathWithRoundedRect:_feedbackFrame xRadius:4 yRadius:4];
+    _feedbackPath = [NSBezierPath bezierPathWithRoundedRect:_feedbackFrame xRadius:4 yRadius:4]; */
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
@@ -79,8 +79,16 @@
     } else {
         [_clearColor set];
     }
+
+    NSRect bounds = self.bounds;
+    bounds.origin.x +=20;
+    bounds.size.width -= 40;
+    bounds.origin.y += 4;
+    bounds.size.height -= 8;
+    _feedbackPath = [NSBezierPath bezierPathWithRoundedRect:bounds xRadius:4 yRadius:4];
     [_feedbackPath fill];
     [_feedbackPath stroke];
+
 }
 
 
