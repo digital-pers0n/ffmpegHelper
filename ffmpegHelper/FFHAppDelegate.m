@@ -17,6 +17,8 @@
 
 #define cmd(x) _ffmpegCmdOptions[x]
 
+#pragma mark - FFDragView Class
+
 @protocol FFHDragViewDelegate <NSObject>
 
 - (void)didRecieveFilename:(NSString *)filename;
@@ -137,6 +139,7 @@
 
 @end
 
+#pragma mark - FFHAppDelegate Class
 
 const NSString *FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
 const NSString *FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS $TWOPASS $LENGTH \"$OUTPUT\"";

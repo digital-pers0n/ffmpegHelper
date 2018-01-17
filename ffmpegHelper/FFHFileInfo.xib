@@ -26,8 +26,8 @@
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="aAD-zn-IZD">
                         <rect key="frame" x="0.0" y="0.0" width="401" height="463"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <textFieldCell key="cell" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="pAX-Lb-w9D">
-                            <font key="font" metaFont="system" size="12"/>
+                        <textFieldCell key="cell" controlSize="small" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="pAX-Lb-w9D">
+                            <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -37,7 +37,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>
-            <point key="canvasLocation" x="269.5" y="215.5"/>
+            <point key="canvasLocation" x="354.5" y="190.5"/>
         </window>
     </objects>
 </document>
