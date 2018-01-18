@@ -721,10 +721,10 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="wbF-9m-xe4" customClass="FFHDragView">
-                        <rect key="frame" x="0.0" y="289" width="640" height="190"/>
+                        <rect key="frame" x="0.0" y="267" width="640" height="212"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Psn-6B-uBM">
-                                <rect key="frame" x="218" y="82" width="205" height="45"/>
+                                <rect key="frame" x="218" y="83" width="205" height="45"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Drop File Here" id="AI6-mo-mhR">
                                     <font key="font" metaFont="system" size="32"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -733,8 +733,8 @@
                             </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="Psn-6B-uBM" firstAttribute="top" secondItem="wbF-9m-xe4" secondAttribute="top" constant="63" id="56W-c4-rfd"/>
-                            <constraint firstAttribute="bottom" secondItem="Psn-6B-uBM" secondAttribute="bottom" constant="82" id="7n4-iI-hBZ"/>
+                            <constraint firstItem="Psn-6B-uBM" firstAttribute="top" secondItem="wbF-9m-xe4" secondAttribute="top" constant="84" id="56W-c4-rfd"/>
+                            <constraint firstAttribute="bottom" secondItem="Psn-6B-uBM" secondAttribute="bottom" constant="83" id="7n4-iI-hBZ"/>
                             <constraint firstItem="Psn-6B-uBM" firstAttribute="centerX" secondItem="wbF-9m-xe4" secondAttribute="centerX" id="Cco-bG-VyP"/>
                         </constraints>
                     </customView>
@@ -973,7 +973,7 @@
                     <constraint firstItem="wbF-9m-xe4" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="1" id="rSg-m7-fvm"/>
                     <constraint firstItem="wbF-9m-xe4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="uvN-5S-ISV"/>
                     <constraint firstAttribute="bottom" secondItem="HfP-Tu-cG5" secondAttribute="bottom" constant="20" symbolic="YES" id="x2U-fR-w1P"/>
-                    <constraint firstItem="HfP-Tu-cG5" firstAttribute="top" secondItem="wbF-9m-xe4" secondAttribute="bottom" constant="25" id="xgQ-nC-gYn"/>
+                    <constraint firstItem="HfP-Tu-cG5" firstAttribute="top" secondItem="wbF-9m-xe4" secondAttribute="bottom" constant="3" id="xgQ-nC-gYn"/>
                 </constraints>
             </view>
             <point key="canvasLocation" x="325" y="418"/>

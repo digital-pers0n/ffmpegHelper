@@ -283,6 +283,15 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _dragView.delegate = self;
     _dropFileFeedbackTextField.hidden = YES;
     _fileInfoWindow = [[FFHFileInfo alloc] init];
+    
+    // IB checkboxes do nothing
+    _commandTextView.automaticDataDetectionEnabled = NO;
+    _commandTextView.automaticLinkDetectionEnabled = NO;
+    _commandTextView.automaticTextReplacementEnabled = NO;
+    _commandTextView.automaticDashSubstitutionEnabled = NO;
+    _commandTextView.automaticQuoteSubstitutionEnabled = NO;
+    _commandTextView.automaticSpellingCorrectionEnabled = NO;
+    
     [self _updateCommandTextView];
 }
 
@@ -362,6 +371,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (void)didRecieveFilename:(NSString *)filename {
     if (filename) {
         
+         filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
         _filePathTextField.stringValue = filename;
         NSString *container = cmd(FFHContainerKey);
         time_t t = 0;
