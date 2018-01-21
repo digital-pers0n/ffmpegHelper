@@ -223,7 +223,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _scriptPath = [path stringByAppendingPathComponent:@"command.sh"];
     [shared createFileAtPath:_scriptPath contents:nil attributes:nil];
     chmod(_scriptPath.UTF8String,  S_IRWXU);
-    _mpvOptions = @{NSWorkspaceLaunchConfigurationArguments:@[@"--loop=yes", @"--osd-fractions", @"--osd-level=3", path]};
+    _mpvOptions = @{NSWorkspaceLaunchConfigurationArguments:@[@"--loop=yes", @"--osd-fractions", @"--osd-level=3", path].mutableCopy};
     
     _ffmpegCmdOptions = [[[NSUserDefaults standardUserDefaults] objectForKey:DEFAULTS_KEY] mutableCopy];
     if (!_ffmpegCmdOptions) {
@@ -356,6 +356,8 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     NSURL *appURL = [sharedWorkspace URLForApplicationWithBundleIdentifier:@"io.mpv"];
     if (appURL) {
         NSError *error = nil;
+        NSMutableArray *args = _mpvOptions[NSWorkspaceLaunchConfigurationArguments];
+        args[3] = path;
         [sharedWorkspace launchApplicationAtURL:appURL
                                         options:NSWorkspaceLaunchAsync | NSWorkspaceLaunchNewInstance
                                   configuration:_mpvOptions
