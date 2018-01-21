@@ -12,6 +12,8 @@
 		CE0010D12003E531009A1BD4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE0010D02003E531009A1BD4 /* Assets.xcassets */; };
 		CE0010D42003E532009A1BD4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0010D22003E532009A1BD4 /* MainMenu.xib */; };
 		CE05FB7020092F8400D59CAA /* runScript.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE05FB6F20092F8400D59CAA /* runScript.scpt */; };
+		CE19BBA92010F76E00CBDBA9 /* FFHMetadataEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE19BBA72010F76E00CBDBA9 /* FFHMetadataEditor.m */; };
+		CE19BBAA2010F76E00CBDBA9 /* FFHMetadataEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19BBA82010F76E00CBDBA9 /* FFHMetadataEditor.xib */; };
 		CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */; };
 		CE3FA9692007DE69002C5B7B /* FFHFileInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3FA9672007DE69002C5B7B /* FFHFileInfo.xib */; };
 		CE9D286F200BC5CC0006FAF5 /* presets.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE9D286E200BC5CC0006FAF5 /* presets.plist */; };
@@ -26,6 +28,9 @@
 		CE0010D32003E532009A1BD4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		CE0010D52003E532009A1BD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE05FB6F20092F8400D59CAA /* runScript.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runScript.scpt; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.applescript; };
+		CE19BBA62010F76E00CBDBA9 /* FFHMetadataEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHMetadataEditor.h; sourceTree = "<group>"; };
+		CE19BBA72010F76E00CBDBA9 /* FFHMetadataEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHMetadataEditor.m; sourceTree = "<group>"; };
+		CE19BBA82010F76E00CBDBA9 /* FFHMetadataEditor.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFHMetadataEditor.xib; sourceTree = "<group>"; };
 		CE356C0F200AABB6001743AF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CE3FA9652007DE69002C5B7B /* FFHFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHFileInfo.h; sourceTree = "<group>"; };
 		CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHFileInfo.m; sourceTree = "<group>"; };
@@ -66,6 +71,9 @@
 			children = (
 				CE0010CA2003E531009A1BD4 /* FFHAppDelegate.h */,
 				CE0010CB2003E531009A1BD4 /* FFHAppDelegate.m */,
+				CE19BBA62010F76E00CBDBA9 /* FFHMetadataEditor.h */,
+				CE19BBA72010F76E00CBDBA9 /* FFHMetadataEditor.m */,
+				CE19BBA82010F76E00CBDBA9 /* FFHMetadataEditor.xib */,
 				CE0010D02003E531009A1BD4 /* Assets.xcassets */,
 				CE0010D22003E532009A1BD4 /* MainMenu.xib */,
 				CE3FA9652007DE69002C5B7B /* FFHFileInfo.h */,
@@ -148,6 +156,7 @@
 				CE05FB7020092F8400D59CAA /* runScript.scpt in Resources */,
 				CE3FA9692007DE69002C5B7B /* FFHFileInfo.xib in Resources */,
 				CE0010D12003E531009A1BD4 /* Assets.xcassets in Resources */,
+				CE19BBAA2010F76E00CBDBA9 /* FFHMetadataEditor.xib in Resources */,
 				CE0010D42003E532009A1BD4 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -161,6 +170,7 @@
 			files = (
 				CE0010CF2003E531009A1BD4 /* main.m in Sources */,
 				CE0010CC2003E531009A1BD4 /* FFHAppDelegate.m in Sources */,
+				CE19BBA92010F76E00CBDBA9 /* FFHMetadataEditor.m in Sources */,
 				CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

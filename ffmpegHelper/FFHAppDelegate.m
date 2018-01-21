@@ -11,6 +11,7 @@
 
 #import "FFHAppDelegate.h"
 #import "FFHFileInfo.h"
+#import "FFHMetadataEditor.h"
 
 
 #define DEFAULTS_KEY @"ffmpegOptions"
@@ -142,7 +143,7 @@
 #pragma mark - FFHAppDelegate Class
 
 const NSString *FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
-const NSString *FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS $TWOPASS $LENGTH \"$OUTPUT\"";
+const NSString *FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $TWOPASS $LENGTH \"$OUTPUT\"";
 
 const NSString *FFHVideoOptionsKey = @"Video";
 const NSString *FFHMiscOptionsKey = @"Misc";
@@ -162,7 +163,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 };
 
 
-@interface FFHAppDelegate () <FFHDragViewDelegate> {
+@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadaEditorDelegate> {
     IBOutlet FFHDragView *_dragView;
     IBOutlet NSTextField *_filePathTextField;
     IBOutlet NSTextField *_outputFilePathTextField;
@@ -182,6 +183,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     BOOL _twoPassEncoding;
     
     FFHFileInfo *_fileInfoWindow;
+    FFHMetadataEditor *_metadataEditorWindow;
     
     NSString *_scriptPath;
     NSDictionary *_mpvOptions;
@@ -197,6 +199,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (IBAction)getInfoMenuItemClicked:(id)sender;
 - (IBAction)playInputMenuItemClicked:(id)sender;
 - (IBAction)playOutputMenuItemClicked:(id)sender;
+- (IBAction)editMetadataMenuItemClicked:(id)sender;
 
 
 @property (weak) IBOutlet NSWindow *window;
@@ -256,12 +259,12 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         item.state = _twoPassEncoding;
         [menu addItem:item];
         
-        [menu addItem:[NSMenuItem separatorItem]];
+       // menu = [NSApp.mainMenu itemWithTag:1001].submenu;
         action = @selector(presetsMenuItemClicked:);
-        item = [[NSMenuItem alloc] initWithTitle:@"Presets" action:nil keyEquivalent:@""];
-        NSMenu *presetsMenu = [[NSMenu alloc] init];
-        item.submenu = presetsMenu;
-        [menu addItem:item];
+        //item = [[NSMenuItem alloc] initWithTitle:@"Presets" action:nil keyEquivalent:@""];
+        NSMenu *presetsMenu = [NSApp.mainMenu itemWithTag:1001].submenu;;
+        //item.submenu = presetsMenu;
+        //[menu addItem:item];
         
         NSArray *presets = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"presets" ofType:@"plist"]];
         for (NSDictionary *obj in presets) {
@@ -283,6 +286,8 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _dragView.delegate = self;
     _dropFileFeedbackTextField.hidden = YES;
     _fileInfoWindow = [[FFHFileInfo alloc] init];
+    _metadataEditorWindow = [[FFHMetadataEditor alloc] init];
+    _metadataEditorWindow.delegate = self;
     
     // IB checkboxes do nothing
     _commandTextView.automaticDataDetectionEnabled = NO;
@@ -327,7 +332,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                          _filePathTextField.stringValue, _outputFilePathTextField.stringValue, cmd(FFHVideoOptionsKey),
                          cmd(FFHAudioOptionsKey),cmd(FFHOtherOptionsKey), cmd(FFHMiscOptionsKey), cmd(FFHStartTimeKey),
                          cmd(FFHLengthTimeKey), twopass, string];
-    _commandTextView.string = command;
+    _commandTextView.string = [NSString stringWithFormat:command, _metadataEditorWindow.metadata];
 }
 
 - (void)_updateDraggingFeedback {
@@ -370,7 +375,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 - (void)didRecieveFilename:(NSString *)filename {
     if (filename) {
-        
+        _metadataEditorWindow.filepath = filename;
          filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
         _filePathTextField.stringValue = filename;
         NSString *container = cmd(FFHContainerKey);
@@ -380,7 +385,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         struct tm *p = &stm;
         p = localtime(&t);
         stm = *p;
-        NSString *suffix = [NSString stringWithFormat:@"-%i_%.2i_%.2i-%.2i%.2i%.2i",
+        NSString *suffix = [NSString stringWithFormat:@"-%i%.2i%.2i-%.2i%.2i%.2i",
                             stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec];
         NSString *ext = filename.pathExtension;
         filename = filename.stringByDeletingPathExtension;
@@ -406,6 +411,11 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     [self _updateDraggingFeedback];
 }
 
+#pragma mark - FFHMetadataEditorDelegate
+
+- (void)metadataDidChange {
+    [self _updateCommandTextView];
+}
 
 #pragma mark - IBActions
 
@@ -453,7 +463,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     
     NSString *path = _filePathTextField.stringValue;
     if (path.length) {
-        [_fileInfoWindow.window makeKeyAndOrderFront:sender];
+        [_fileInfoWindow.window makeKeyAndOrderFront:nil];
         [_fileInfoWindow showFileInfo:_filePathTextField.stringValue];
     } else {
         NSBeep();
@@ -477,6 +487,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     } else {
         NSBeep();
     }
+}
+
+- (IBAction)editMetadataMenuItemClicked:(id)sender {
+    [_metadataEditorWindow showWindow:sender];
 }
 
 - (IBAction)runScriptMenuItemClicked:(id)sender {

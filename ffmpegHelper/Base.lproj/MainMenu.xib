@@ -125,6 +125,12 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="8Jr-Yo-6wh"/>
+                            <menuItem title="Edit Metadata..." keyEquivalent="d" id="1mi-5q-x5i">
+                                <connections>
+                                    <action selector="editMetadataMenuItemClicked:" target="Voe-Tx-rLC" id="GC8-tJ-i54"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="WLM-w7-4gp"/>
                             <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                 <connections>
                                     <action selector="performClose:" target="-1" id="HmO-Ls-i7Q"/>
@@ -695,6 +701,10 @@
                 <menuItem title="Options" tag="1000" id="WIU-GS-knY">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Options" id="0uI-Yc-CXs"/>
+                </menuItem>
+                <menuItem title="Presets" tag="1001" id="ijV-tX-8GB">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Presets" id="SEw-T4-9gA"/>
                 </menuItem>
                 <menuItem title="Help" id="wpr-3q-Mcd">
                     <modifierMask key="keyEquivalentModifierMask"/>
