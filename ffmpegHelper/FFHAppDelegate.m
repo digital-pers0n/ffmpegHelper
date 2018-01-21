@@ -189,6 +189,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     NSDictionary *_mpvOptions;
 }
 
+- (IBAction)outputFilePathTextFieldChanged:(NSTextField *)sender;
 - (IBAction)videoOptionsTextFieldChanged:(NSTextField *)sender;
 - (IBAction)miscOptionsTextFieldChanged:(NSTextField *)sender;
 - (IBAction)otherOptionsTextFieldChanged:(NSTextField *)sender;
@@ -419,6 +420,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 #pragma mark - IBActions
 
+- (IBAction)outputFilePathTextFieldChanged:(NSTextField *)sender {
+    [self _updateCommandTextView];
+}
+
 - (IBAction)videoOptionsTextFieldChanged:(NSTextField *)sender {
     cmd(FFHVideoOptionsKey) = sender.stringValue;
     [self _updateCommandTextView];
@@ -522,20 +527,33 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     [self _updateCommandTextView];
 }
 
+#pragma mark - Presets Menu Actions
+
 - (void)loadUserPresetMenuItemClicked:(id)sender {
     NSString *path = FFHUserPresetPath.stringByExpandingTildeInPath;
     NSDictionary *obj = [[NSDictionary alloc] initWithContentsOfFile:path];
     if (obj) {
-        _videoOptionsTextField.stringValue = obj[FFHVideoOptionsKey];
-        _audioOptionsTextField.stringValue = obj[FFHAudioOptionsKey];
-        _miscOptionsTextField.stringValue = obj[FFHMiscOptionsKey];
-        _otherOptionsTextField.stringValue = obj[FFHOtherOptionsKey];
-        cmd(FFHContainerKey) = obj[FFHContainerKey];
+        NSString *outfile = [_outputFilePathTextField.stringValue stringByDeletingPathExtension];
+        NSString *temp = obj[FFHContainerKey];
+        _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
+        cmd(FFHContainerKey) = temp;
         
-        [self videoOptionsTextFieldChanged:_videoOptionsTextField];
-        [self audioOptionsTextFieldChanged:_audioOptionsTextField];
-        [self miscOptionsTextFieldChanged:_miscOptionsTextField];
-        [self otherOptionsTextFieldChanged:_otherOptionsTextField];
+        temp = obj[FFHVideoOptionsKey];
+        _videoOptionsTextField.stringValue = temp;
+        cmd(FFHVideoOptionsKey) = temp;
+        
+        temp = obj[FFHAudioOptionsKey];
+        _audioOptionsTextField.stringValue = temp;
+        cmd(FFHAudioOptionsKey) = temp;
+        
+        temp = obj[FFHMiscOptionsKey];
+        _miscOptionsTextField.stringValue = temp;
+         cmd(FFHMiscOptionsKey) = temp;
+        
+        temp = obj[FFHOtherOptionsKey];
+        _otherOptionsTextField.stringValue = temp;
+        cmd(FFHOtherOptionsKey) = temp;
+        
         [self _updateCommandTextView];
     } else {
         NSBeep();
@@ -554,16 +572,27 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 - (void)presetsMenuItemClicked:(NSMenuItem *)sender {
     NSDictionary *obj = sender.representedObject;
-    _videoOptionsTextField.stringValue = obj[FFHVideoOptionsKey];
-    _audioOptionsTextField.stringValue = obj[FFHAudioOptionsKey];
-    _miscOptionsTextField.stringValue = obj[FFHMiscOptionsKey];
-    _otherOptionsTextField.stringValue = obj[FFHOtherOptionsKey];
-    cmd(FFHContainerKey) = obj[FFHContainerKey];
+    NSString *outfile = [_outputFilePathTextField.stringValue stringByDeletingPathExtension];
+    NSString *temp = obj[FFHContainerKey];
+    _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
+    cmd(FFHContainerKey) = temp;
     
-    [self videoOptionsTextFieldChanged:_videoOptionsTextField];
-    [self audioOptionsTextFieldChanged:_audioOptionsTextField];
-    [self miscOptionsTextFieldChanged:_miscOptionsTextField];
-    [self otherOptionsTextFieldChanged:_otherOptionsTextField];
+    temp = obj[FFHVideoOptionsKey];
+    _videoOptionsTextField.stringValue = temp;
+    cmd(FFHVideoOptionsKey) = temp;
+    
+    temp = obj[FFHAudioOptionsKey];
+    _audioOptionsTextField.stringValue = temp;
+    cmd(FFHAudioOptionsKey) = temp;
+    
+    temp = obj[FFHMiscOptionsKey];
+    _miscOptionsTextField.stringValue = temp;
+    cmd(FFHMiscOptionsKey) = temp;
+    
+    temp = obj[FFHOtherOptionsKey];
+    _otherOptionsTextField.stringValue = temp;
+    cmd(FFHOtherOptionsKey) = temp;
+    
     [self _updateCommandTextView];
 }
 

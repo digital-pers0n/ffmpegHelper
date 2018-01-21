@@ -758,6 +758,9 @@
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <action selector="outputFilePathTextFieldChanged:" target="Voe-Tx-rLC" id="te4-Pk-1rD"/>
+                                </connections>
                             </textField>
                             <textField toolTip=" -c:v libvpx-vp9  -b:v 2100k -bt 1280k -maxrate 5200k -bufsize 3200k" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Qae-Ha-hLM">
                                 <rect key="frame" x="18" y="144" width="37" height="14"/>
