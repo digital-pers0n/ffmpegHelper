@@ -32,6 +32,7 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
 - (IBAction)commentTextFieldChanged:(NSTextField *)sender;
 - (IBAction)cancelButtonClicked:(id)sender;
 - (IBAction)okButtonClicked:(id)sender;
+- (IBAction)applyButtonClicked:(id)sender;
 
 @end
 
@@ -43,6 +44,8 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
 
 - (void)windowDidLoad {
     [super windowDidLoad];
+    NSPanel *panel = (id)self.window;
+    panel.floatingPanel = NO;
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 }
 
@@ -152,6 +155,14 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
     return result;
 }
 
+- (void)_updateCachedMetadata {
+    _cachedMetadata[_metadataFields[FFHMetadataArtist]] = _artistTextField.stringValue;
+    _cachedMetadata[_metadataFields[FFHMetadataTitle]] = _titleTextField.stringValue;
+    _cachedMetadata[_metadataFields[FFHMetadataDate]] = _dateTextField.stringValue;
+    _cachedMetadata[_metadataFields[FFHMetadataComment]] = _commentTextField.stringValue;
+    [_delegate metadataDidChange];
+}
+
 #pragma mark IBActions
 
 - (IBAction)titleTextFieldChanged:(NSTextField *)sender {
@@ -171,11 +182,11 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
 }
 
 - (IBAction)okButtonClicked:(id)sender {
-    _cachedMetadata[_metadataFields[FFHMetadataArtist]] = _artistTextField.stringValue;
-    _cachedMetadata[_metadataFields[FFHMetadataTitle]] = _titleTextField.stringValue;
-    _cachedMetadata[_metadataFields[FFHMetadataDate]] = _dateTextField.stringValue;
-    _cachedMetadata[_metadataFields[FFHMetadataComment]] = _commentTextField.stringValue;
-    [_delegate metadataDidChange];
+    [self _updateCachedMetadata];
     [self.window close];
+}
+
+- (IBAction)applyButtonClicked:(id)sender {
+    [self _updateCachedMetadata];
 }
 @end
