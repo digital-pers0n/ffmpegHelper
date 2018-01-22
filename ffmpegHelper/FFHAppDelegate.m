@@ -455,10 +455,13 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     cmd(FFHEndTimeKey) = sender.stringValue;
     double end = sender.floatValue;
     NSString *startString = _startTimeTextField.stringValue;
-    NSRange range = NSMakeRange(3, startString.length - 3);
-    double start = [startString substringWithRange:range].floatValue;
-    _lengthTimeTextField.stringValue = [NSString stringWithFormat:@"-t %.3f", end - start];
-    [self lengthTimeTextFieldChanged:_lengthTimeTextField];
+    NSUInteger length = startString.length;
+    if (length > 3) {
+        NSRange range = NSMakeRange(3, startString.length - 3);
+        double start = [startString substringWithRange:range].floatValue;
+        _lengthTimeTextField.stringValue = [NSString stringWithFormat:@"-t %.3f", end - start];
+        [self lengthTimeTextFieldChanged:_lengthTimeTextField];
+    }
 }
 
 - (IBAction)lengthTimeTextFieldChanged:(NSTextField *)sender {
