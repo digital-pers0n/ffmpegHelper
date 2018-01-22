@@ -537,9 +537,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     if (obj) {
         NSString *outfile = [_outputFilePathTextField.stringValue stringByDeletingPathExtension];
         NSString *temp = obj[FFHContainerKey];
-        _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
-        cmd(FFHContainerKey) = temp;
-        
+        if (temp.length) {
+            _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
+            cmd(FFHContainerKey) = temp;
+        }
         temp = obj[FFHVideoOptionsKey];
         _videoOptionsTextField.stringValue = temp;
         cmd(FFHVideoOptionsKey) = temp;
@@ -576,8 +577,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     NSDictionary *obj = sender.representedObject;
     NSString *outfile = [_outputFilePathTextField.stringValue stringByDeletingPathExtension];
     NSString *temp = obj[FFHContainerKey];
-    _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
-    cmd(FFHContainerKey) = temp;
+    if (temp.length) {
+        _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
+        cmd(FFHContainerKey) = temp;
+    }
     
     temp = obj[FFHVideoOptionsKey];
     _videoOptionsTextField.stringValue = temp;
