@@ -209,8 +209,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 @implementation FFHAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    // Insert code here to initialize your application
-    
     NSFileManager *shared = [NSFileManager defaultManager];
     NSURL *appSupp = [shared URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask].firstObject;
     appSupp = [appSupp URLByAppendingPathComponent:@"ffmpegHelper" isDirectory:YES];
@@ -237,10 +235,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                               FFHEndTimeKey: @"",
                               FFHLengthTimeKey: @"",
                               FFHContainerKey: @"webm"}.mutableCopy;
-    } else {
-        if (!cmd(FFHContainerKey)) {
-            cmd(FFHContainerKey) = @"webm";
-        }
     }
     _videoOptionsTextField.stringValue = cmd(FFHVideoOptionsKey);
     _audioOptionsTextField.stringValue = cmd(FFHAudioOptionsKey);
@@ -260,12 +254,9 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         item.state = _twoPassEncoding;
         [menu addItem:item];
         
-       // menu = [NSApp.mainMenu itemWithTag:1001].submenu;
+
         action = @selector(presetsMenuItemClicked:);
-        //item = [[NSMenuItem alloc] initWithTitle:@"Presets" action:nil keyEquivalent:@""];
         NSMenu *presetsMenu = [NSApp.mainMenu itemWithTag:1001].submenu;;
-        //item.submenu = presetsMenu;
-        //[menu addItem:item];
         
         NSArray *presets = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"presets" ofType:@"plist"]];
         for (NSDictionary *obj in presets) {
@@ -304,7 +295,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     [[NSUserDefaults standardUserDefaults] setBool:_twoPassEncoding forKey:(NSString *)FFHMenuTwoPassKey];
     [[NSUserDefaults standardUserDefaults] setObject:_ffmpegCmdOptions forKey:DEFAULTS_KEY];
-    // Insert code here to tear down your application
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
@@ -616,7 +606,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
             
             NSURL *url = openPanel.URL;
             [self didRecieveFilename:url.path];
-            //[[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:url];
         }
         
     }];

@@ -46,7 +46,6 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
     [super windowDidLoad];
     NSPanel *panel = (id)self.window;
     panel.floatingPanel = NO;
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 }
 
 - (void)showWindow:(id)sender {

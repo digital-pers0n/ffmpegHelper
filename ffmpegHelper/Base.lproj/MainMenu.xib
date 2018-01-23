@@ -883,7 +883,7 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="1" verticalHuggingPriority="1" translatesAutoresizingMaskIntoConstraints="NO" id="6wf-Ml-wFb">
+                            <textField horizontalHuggingPriority="1" verticalHuggingPriority="1" preferredMaxLayoutWidth="600" translatesAutoresizingMaskIntoConstraints="NO" id="6wf-Ml-wFb">
                                 <rect key="frame" x="18" y="199" width="604" height="14"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="14" id="fmb-ji-ZkB"/>
@@ -989,7 +989,7 @@
                     <constraint firstItem="HfP-Tu-cG5" firstAttribute="top" secondItem="VKB-af-A0r" secondAttribute="bottom" constant="3" id="wow-bS-1fi"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="343" y="395"/>
+            <point key="canvasLocation" x="355" y="314"/>
         </window>
     </objects>
 </document>
