@@ -530,7 +530,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     if (obj) {
         NSString *outfile = [_outputFilePathTextField.stringValue stringByDeletingPathExtension];
         NSString *temp = obj[FFHContainerKey];
-        if (temp.length) {
+        if (temp.length && outfile.length) {
             _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
             cmd(FFHContainerKey) = temp;
         }
