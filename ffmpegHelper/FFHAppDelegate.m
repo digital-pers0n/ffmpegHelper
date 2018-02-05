@@ -187,6 +187,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     
     NSString *_scriptPath;
     NSDictionary *_mpvOptions;
+    NSAppleScript *_appleScript;
 }
 
 - (IBAction)outputFilePathTextFieldChanged:(NSTextField *)sender;
@@ -219,8 +220,16 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         [shared createDirectoryAtURL:appSupp withIntermediateDirectories:NO attributes:nil error:nil];
     }
     _scriptPath = [path stringByAppendingPathComponent:@"command.sh"];
-    [shared createFileAtPath:_scriptPath contents:nil attributes:nil];
-    chmod(_scriptPath.UTF8String,  S_IRWXU);
+    if (![shared fileExistsAtPath:_scriptPath]) {
+        [shared createFileAtPath:_scriptPath contents:nil attributes:nil];
+        chmod(_scriptPath.UTF8String,  S_IRWXU);
+    }
+    {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"runScript" ofType:@"scpt"];
+        NSString *string = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+        string = [string stringByReplacingOccurrencesOfString:@"%script%" withString:_scriptPath];
+        _appleScript = [[NSAppleScript alloc] initWithSource:string];
+    }
     _mpvOptions = @{NSWorkspaceLaunchConfigurationArguments:@[@"--loop=yes", @"--osd-fractions", @"--osd-level=3", path].mutableCopy};
     
     _ffmpegCmdOptions = [[[NSUserDefaults standardUserDefaults] objectForKey:DEFAULTS_KEY] mutableCopy];
@@ -494,15 +503,11 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (IBAction)runScriptMenuItemClicked:(id)sender {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"runScript" ofType:@"scpt"];
-    NSString *string = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     NSMutableString *convertScript = [[NSMutableString alloc] initWithContentsOfFile:_scriptPath encoding:NSUTF8StringEncoding error:nil];
     [convertScript deleteCharactersInRange:NSMakeRange(0, convertScript.length)];
     [convertScript appendString:_commandTextView.string];
     [convertScript writeToFile:_scriptPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    string = [string stringByReplacingOccurrencesOfString:@"%script%" withString:_scriptPath];
-    NSAppleScript *script = [[NSAppleScript alloc] initWithSource:string];
-    [script executeAndReturnError:nil];
+    [_appleScript executeAndReturnError:nil];
 }
 
 #pragma mark - Options Menu Action
