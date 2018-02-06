@@ -186,6 +186,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     FFHMetadataEditor *_metadataEditorWindow;
     
     NSString *_scriptPath;
+    NSMutableString *_convertScript;
     NSDictionary *_mpvOptions;
     NSAppleScript *_appleScript;
 }
@@ -224,6 +225,8 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         [shared createFileAtPath:_scriptPath contents:nil attributes:nil];
         chmod(_scriptPath.UTF8String,  S_IRWXU);
     }
+    _convertScript = [[NSMutableString alloc] initWithContentsOfFile:_scriptPath encoding:NSUTF8StringEncoding error:nil];
+    
     {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"runScript" ofType:@"scpt"];
         NSString *string = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
@@ -477,7 +480,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     } else {
         NSBeep();
     }
-
 }
 
 - (IBAction)playInputMenuItemClicked:(id)sender {
@@ -503,10 +505,8 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (IBAction)runScriptMenuItemClicked:(id)sender {
-    NSMutableString *convertScript = [[NSMutableString alloc] initWithContentsOfFile:_scriptPath encoding:NSUTF8StringEncoding error:nil];
-    [convertScript deleteCharactersInRange:NSMakeRange(0, convertScript.length)];
-    [convertScript appendString:_commandTextView.string];
-    [convertScript writeToFile:_scriptPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    [_convertScript replaceCharactersInRange:NSMakeRange(0, _convertScript.length) withString:_commandTextView.string];
+    [_convertScript writeToFile:_scriptPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     [_appleScript executeAndReturnError:nil];
 }
 
