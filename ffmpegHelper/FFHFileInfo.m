@@ -33,7 +33,7 @@
     NSArray *outArray = [[[NSString alloc] initWithData:outData encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\n"];
     NSMutableArray *infoArray = [NSMutableArray new];
     NSRange range;
-    NSString *input = @"Input #";
+    NSString *input = @"Duration:";
     for (NSString *s in outArray) {
         range = [s rangeOfString:input];
         if (range.length) {
