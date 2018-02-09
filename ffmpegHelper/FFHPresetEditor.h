@@ -11,6 +11,7 @@
 @interface FFHPresetEditor : NSWindowController
 
 @property NSString *presetsFilePath;
-- (void)showPresetsEditor;
+- (void)showPresetsListPanel;
+@property NSArray *userPresets;
 
 @end

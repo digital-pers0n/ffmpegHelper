@@ -12,6 +12,7 @@
 #import "FFHAppDelegate.h"
 #import "FFHFileInfo.h"
 #import "FFHMetadataEditor.h"
+#import "FFHPresetEditor.h"
 
 
 #define DEFAULTS_KEY @"ffmpegOptions"
@@ -145,6 +146,7 @@
 const NSString *FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
 const NSString *FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $TWOPASS $LENGTH \"$OUTPUT\"";
 
+const NSString *FFHPresetNameKey = @"Name";
 const NSString *FFHVideoOptionsKey = @"Video";
 const NSString *FFHMiscOptionsKey = @"Misc";
 const NSString *FFHOtherOptionsKey = @"Other";
@@ -158,12 +160,14 @@ const NSString *FFHMenuTwoPassKey = @"TwoPassEncoding";
 
 const NSString *FFHUserPresetPath = @"~/Library/Application Support/ffmpegHelper/userPreset.plist";
 
+extern NSString *kFFHPresetsListFilePath;
+
 typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     FFHMenuOption2PassTag,
 };
 
 
-@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadaEditorDelegate> {
+@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadaEditorDelegate, NSMenuDelegate> {
     IBOutlet FFHDragView *_dragView;
     IBOutlet NSTextField *_filePathTextField;
     IBOutlet NSTextField *_outputFilePathTextField;
@@ -184,11 +188,13 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     
     FFHFileInfo *_fileInfoWindow;
     FFHMetadataEditor *_metadataEditorWindow;
+    FFHPresetEditor *_presetEditor;
     
     NSString *_scriptPath;
     NSMutableString *_convertScript;
     NSDictionary *_mpvOptions;
     NSAppleScript *_appleScript;
+    NSArray *_defaultMenuItems;
 }
 
 - (IBAction)outputFilePathTextFieldChanged:(NSTextField *)sender;
@@ -267,24 +273,29 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         [menu addItem:item];
         
 
-        action = @selector(presetsMenuItemClicked:);
-        NSMenu *presetsMenu = [NSApp.mainMenu itemWithTag:1001].submenu;;
+        //action = @selector(presetsMenuItemClicked:);
+        NSMenu *presetsMenu = [NSApp.mainMenu itemWithTag:1001].submenu;
+        presetsMenu.delegate = self;
         
-        NSArray *presets = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"presets" ofType:@"plist"]];
-        for (NSDictionary *obj in presets) {
-            item = [[NSMenuItem alloc] initWithTitle:obj[@"Name"] action:action keyEquivalent:@""];
-            item.target = self;
-            item.representedObject = obj;
-            [presetsMenu addItem:item];
-        }
+//        for (NSDictionary *obj in presets) {
+//            item = [[NSMenuItem alloc] initWithTitle:obj[@"Name"] action:action keyEquivalent:@""];
+//            item.target = self;
+//            item.representedObject = obj;
+//            [presetsMenu addItem:item];
+//        }
         [presetsMenu addItem:[NSMenuItem separatorItem]];
-        item = [[NSMenuItem alloc] initWithTitle:@"Save Preset" action:@selector(saveUserPresetMenuItemClicked:) keyEquivalent:@""];
+        item = [[NSMenuItem alloc] initWithTitle:@"Edit Presets" action:@selector(editPresetsMenuItemClicked:) keyEquivalent:@""];
+        item.target = self;
+        [presetsMenu addItem:item];
+        [presetsMenu addItem:[NSMenuItem separatorItem]];
+        item = [[NSMenuItem alloc] initWithTitle:@"Quick Save Preset" action:@selector(saveUserPresetMenuItemClicked:) keyEquivalent:@""];
         item.target = self;
         [presetsMenu addItem:item];
         
         item = [[NSMenuItem alloc] initWithTitle:@"Load Preset" action:@selector(loadUserPresetMenuItemClicked:) keyEquivalent:@""];
         item.target = self;
         [presetsMenu addItem:item];
+        _defaultMenuItems = presetsMenu.itemArray;
     }
     
     _dragView.delegate = self;
@@ -292,6 +303,16 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _fileInfoWindow = [[FFHFileInfo alloc] init];
     _metadataEditorWindow = [[FFHMetadataEditor alloc] init];
     _metadataEditorWindow.delegate = self;
+    _presetEditor = [[FFHPresetEditor alloc] init];
+    
+    NSArray *presets;
+    NSString *presetsPath = [kFFHPresetsListFilePath stringByExpandingTildeInPath];
+    if ([shared fileExistsAtPath:presetsPath]) {
+        presets = [[NSArray alloc] initWithContentsOfFile:presetsPath];
+    } else {
+        presets = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"presets" ofType:@"plist"]];
+        _presetEditor.userPresets = presets;
+    }
     
     // IB checkboxes do nothing
     _commandTextView.automaticDataDetectionEnabled = NO;
@@ -302,6 +323,28 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _commandTextView.automaticSpellingCorrectionEnabled = NO;
     
     [self _updateCommandTextView];
+}
+
+- (void)editPresetsMenuItemClicked:(id)sender {
+    [_presetEditor showPresetsListPanel];
+}
+
+#pragma mark - NSMenuDelegate
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+    [menu removeAllItems];
+    SEL action = @selector(presetsMenuItemClicked:);
+    NSArray *presets = _presetEditor.userPresets;
+    NSMenuItem *item = nil;
+    for (NSDictionary *obj in presets) {
+        item = [[NSMenuItem alloc] initWithTitle:obj[@"Name"] action:action keyEquivalent:@""];
+        item.target = self;
+        item.representedObject = obj;
+        [menu addItem:item];
+    }
+    for (NSMenuItem *itm in _defaultMenuItems) {
+        [menu addItem:itm];
+    }
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
