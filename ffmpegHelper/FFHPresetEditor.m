@@ -15,7 +15,7 @@ extern NSString *FFHOtherOptionsKey;
 extern NSString *FFHAudioOptionsKey;
 extern NSString *FFHContainerKey;
 
-const NSString *kFFHPresetsListFilePath = @"~/Library/ffmpegHelper/customPresets.plist";
+const NSString *kFFHPresetsListFilePath = @"~/Library/Application Support/ffmpegHelper/customPresets.plist";
 const NSString *kFFHLocalReorderPboardType = @"FFHLocalPboardType";
 
 #define cmd(x) _selectedPreset[x]
