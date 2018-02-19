@@ -81,13 +81,11 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
     NSMutableIndexSet *indices = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)];
     __block NSRange range;
     for (NSString *s in outArray) {
-        [_metadataFields enumerateObjectsAtIndexes:indices.copy options:0 usingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [_metadataFields enumerateObjectsAtIndexes:indices.copy options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             range = [s rangeOfString:obj];
             if (range.length) {
                 NSString *subs = [s substringFromIndex:range.length + range.location + 1];
                 _cachedMetadata[obj] = [subs stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-//                _cachedMetadata[obj] = [subs stringByReplacingOccurrencesOfString:@"'" withString:@"\\\""];
-//                _cachedMetadata[obj] = subs;
                 *stop = YES;
                 hits++;
                 [indices removeIndex:idx];
@@ -98,7 +96,7 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
         }
     }
     if (indices.count) {
-        [_metadataFields enumerateObjectsAtIndexes:indices options:0 usingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [_metadataFields enumerateObjectsAtIndexes:indices options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             if (idx == FFHMetadataTitle) {
                 NSString *title = filePath.lastPathComponent.stringByDeletingPathExtension;
                 if (title) {
@@ -120,7 +118,7 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
 }
 
 -(void)_updateViews {
-    [_cachedMetadata enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+    [_cachedMetadata enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if ([key isEqualToString:_metadataFields[FFHMetadataArtist]]) {
             _artistTextField.stringValue = obj;
         } else if ([key isEqualToString:_metadataFields[FFHMetadataTitle]]) {
@@ -134,16 +132,6 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
 }
 
 - (NSString *)metadata  {
-//    NSString *result = [NSString stringWithFormat:@"MARTIST=\"%@\"\n"
-//                        @"MTITLE=\"%@\"\n"
-//                        @"MDATE=\"%@\"\n"
-//                        @"MCOMMENT=\"%@\"\n"
-//                        @"MDATA=\"-metadata title=\\\"$MTITLE\\\" "
-//                        @"-metadata artist=\\\"$MARTIST\\\" "
-//                        @"-metadata date=\\\"$MDATE\\\" "
-//                        @"-metadata comment=\\\"MCOMMENT\\\"\"\n",
-//                        _cachedMetadata[_metadataFields[FFHMetadataArtist]], _cachedMetadata[_metadataFields[FFHMetadataTitle]],
-//                        _cachedMetadata[_metadataFields[FFHMetadataDate]], _cachedMetadata[_metadataFields[FFHMetadataComment]]];
     NSString *result = [NSString stringWithFormat:
                         @"-metadata title=\"%@\" "
                         @"-metadata artist=\"%@\" "

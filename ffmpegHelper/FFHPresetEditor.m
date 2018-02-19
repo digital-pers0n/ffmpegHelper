@@ -119,7 +119,7 @@ const NSString *kFFHLocalReorderPboardType = @"FFHLocalPboardType";
 
 #pragma mark - NSTableView DataSource
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     NSDictionary *obj = nil;
     if (row < _presetsArray.count) {
         obj = _presetsArray[row];
@@ -127,7 +127,7 @@ const NSString *kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     return obj[FFHPresetNameKey];
 }
 
-- (void)tableView:(NSTableView *)tableView setObjectValue:(nullable id)object forTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
+- (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if (row < _presetsArray.count && object) {
         NSMutableDictionary *obj = [_presetsArray[row] mutableCopy];
         obj[FFHPresetNameKey] = object;
@@ -155,7 +155,7 @@ const NSString *kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     return NO;
 }
 
-- (nullable id <NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+- (id <NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
     if (row < _presetsArray.count) {
         return [_presetsArray objectAtIndex:row];
     }
@@ -172,7 +172,7 @@ const NSString *kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     // If the session ended in the trash, then delete all the items
     if (operation == NSDragOperationDelete) {
         [_tableView beginUpdates];
-        [_presetsArray.copy enumerateObjectsAtIndexes:_draggedRows options:NSEnumerationReverse usingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [_presetsArray.copy enumerateObjectsAtIndexes:_draggedRows options:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             [_presetsArray removeObject:obj];
         }];
         [_tableView removeRowsAtIndexes:_draggedRows withAnimation:NSTableViewAnimationEffectFade];
