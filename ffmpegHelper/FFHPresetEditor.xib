@@ -171,7 +171,7 @@ Gw
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>
-            <point key="canvasLocation" x="678" y="238.5"/>
+            <point key="canvasLocation" x="697" y="245.5"/>
         </window>
         <window title="Presets" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="ITC-a4-5Us" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
@@ -249,22 +249,22 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="v52-dF-n63">
-                        <rect key="frame" x="202" y="11" width="64" height="22"/>
+                        <rect key="frame" x="203" y="7" width="70" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="squareTextured" title="Edit" bezelStyle="texturedSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cr8-Je-8S3">
+                        <buttonCell key="cell" type="push" title="Edit" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cr8-Je-8S3">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="cellTitle"/>
+                            <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
                         <connections>
                             <action selector="editButtonClicked:" target="-2" id="ZiO-pu-zfO"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="mEm-x6-t0A">
-                        <rect key="frame" x="120" y="11" width="74" height="22"/>
+                        <rect key="frame" x="129" y="7" width="76" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="squareTextured" title="Duplicate" bezelStyle="texturedSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5XN-fz-ay1">
+                        <buttonCell key="cell" type="push" title="Duplicate" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5XN-fz-ay1">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="cellTitle"/>
+                            <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
                         <connections>
                             <action selector="duplicateButtonClicked:" target="-2" id="X32-BZ-xfW"/>
@@ -272,7 +272,7 @@ Gw
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="289" y="221"/>
+            <point key="canvasLocation" x="289" y="228"/>
         </window>
     </objects>
     <resources>
