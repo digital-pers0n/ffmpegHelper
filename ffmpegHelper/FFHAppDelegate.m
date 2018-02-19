@@ -288,7 +288,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         item.target = self;
         [presetsMenu addItem:item];
         [presetsMenu addItem:[NSMenuItem separatorItem]];
-        item = [[NSMenuItem alloc] initWithTitle:@"Quick Save Preset" action:@selector(saveUserPresetMenuItemClicked:) keyEquivalent:@""];
+        item = [[NSMenuItem alloc] initWithTitle:@"Save Preset" action:@selector(saveUserPresetMenuItemClicked:) keyEquivalent:@""];
         item.target = self;
         [presetsMenu addItem:item];
         
