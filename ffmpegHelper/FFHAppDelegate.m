@@ -143,22 +143,22 @@
 
 #pragma mark - FFHAppDelegate Class
 
-const NSString *FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
-const NSString *FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $TWOPASS $LENGTH \"$OUTPUT\"";
+NSString * const FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
+NSString * const FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $TWOPASS $LENGTH \"$OUTPUT\"";
 
-const NSString *FFHPresetNameKey = @"Name";
-const NSString *FFHVideoOptionsKey = @"Video";
-const NSString *FFHMiscOptionsKey = @"Misc";
-const NSString *FFHOtherOptionsKey = @"Other";
-const NSString *FFHAudioOptionsKey = @"Audio";
-const NSString *FFHStartTimeKey = @"StartTime";
-const NSString *FFHEndTimeKey = @"EndTime";
-const NSString *FFHLengthTimeKey = @"LengthTime";
-const NSString *FFHContainerKey = @"Container";
+NSString * const FFHPresetNameKey = @"Name";
+NSString * const FFHVideoOptionsKey = @"Video";
+NSString * const FFHMiscOptionsKey = @"Misc";
+NSString * const FFHOtherOptionsKey = @"Other";
+NSString * const FFHAudioOptionsKey = @"Audio";
+NSString * const FFHStartTimeKey = @"StartTime";
+NSString * const FFHEndTimeKey = @"EndTime";
+NSString * const FFHLengthTimeKey = @"LengthTime";
+NSString * const FFHContainerKey = @"Container";
 
-const NSString *FFHMenuTwoPassKey = @"TwoPassEncoding";
+NSString * const FFHMenuTwoPassKey = @"TwoPassEncoding";
 
-const NSString *FFHUserPresetPath = @"~/Library/Application Support/ffmpegHelper/userPreset.plist";
+NSString * const FFHUserPresetPath = @"~/Library/Application Support/ffmpegHelper/userPreset.plist";
 
 extern NSString *kFFHPresetsListFilePath;
 
