@@ -7,13 +7,7 @@
 //
 
 #import "FFHPresetEditor.h"
-
-extern NSString *FFHPresetNameKey;
-extern NSString *FFHVideoOptionsKey;
-extern NSString *FFHMiscOptionsKey;
-extern NSString *FFHOtherOptionsKey;
-extern NSString *FFHAudioOptionsKey;
-extern NSString *FFHContainerKey;
+#import "FFHPresetItem.h"
 
 NSString * const kFFHPresetsListFilePath = @"~/Library/Application Support/ffmpegHelper/customPresets.plist";
 NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
@@ -30,8 +24,8 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     IBOutlet NSTextField *_miscTextField;
     
     IBOutlet NSPanel *_presetsPanel;
-    NSMutableArray *_presetsArray;
-    NSDictionary *_selectedPreset;
+    NSMutableArray <FFHPresetItem *> *_presetsArray;
+    FFHPresetItem *_selectedPreset;
     NSString *_presetsFilePath;
     
     NSIndexSet *_draggedRows;
@@ -54,12 +48,33 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
         _presetsFilePath = [kFFHPresetsListFilePath stringByExpandingTildeInPath];
         NSFileManager *fm = [NSFileManager defaultManager];
         if ([fm fileExistsAtPath:_presetsFilePath]) {
-            _presetsArray = [[NSMutableArray alloc] initWithContentsOfFile:_presetsFilePath];
+           // _presetsArray = [[NSMutableArray alloc] initWithContentsOfFile:_presetsFilePath];
+            [self loadPresets];
         } else {
             _presetsArray = [NSMutableArray new];
         }
     }
     return self;
+}
+
+- (void)savePresets {
+    NSUInteger i, count = _presetsArray.count;
+    NSMutableArray *arr = [[NSMutableArray alloc] initWithCapacity:count];
+    for (i = 0; i < count; ++i) {
+        arr[i] = _presetsArray[i].dictionary;
+    }
+    [arr writeToFile:_presetsFilePath atomically:YES];
+}
+
+- (void)loadPresets {
+    NSArray *arr = [[NSArray alloc] initWithContentsOfFile:_presetsFilePath];
+    _presetsArray = [NSMutableArray new];
+    FFHPresetItem *item = [FFHPresetItem new];
+    NSUInteger i, count = arr.count;
+    for (i = 0; i < count; ++i) {
+        item.dictionary = arr[i];
+        _presetsArray[i] = item.copy;
+    }
 }
 
 - (NSString *)windowNibName {
@@ -92,7 +107,7 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
 }
 
 - (void)showPresetEditor {
-    if (_selectedPreset) {
+    /*if (_selectedPreset) {
         [self.window makeKeyAndOrderFront:nil];
         _nameTextField.stringValue = cmd(FFHPresetNameKey);
         _containerTextField.stringValue = cmd(FFHContainerKey);
@@ -100,6 +115,15 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
         _audioTextField.stringValue = cmd(FFHAudioOptionsKey);
         _miscTextField.stringValue = cmd(FFHMiscOptionsKey);
         _otherTextField.stringValue = cmd(FFHOtherOptionsKey);
+    }*/
+    if (_selectedPreset) {
+        [self.window makeKeyAndOrderFront:nil];
+        _nameTextField.stringValue = _selectedPreset.name;
+        _containerTextField.stringValue = _selectedPreset.container;
+        _videoTextField.stringValue = _selectedPreset.videoOptions;
+        _audioTextField.stringValue = _selectedPreset.audioOptions;
+        _miscTextField.stringValue = _selectedPreset.miscOptions;
+        _otherTextField.stringValue = _selectedPreset.otherOptions;
     }
 }
 
@@ -120,18 +144,18 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
 #pragma mark - NSTableView DataSource
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSDictionary *obj = nil;
+    NSString *obj = nil;
     if (row < _presetsArray.count) {
-        obj = _presetsArray[row];
+        obj = _presetsArray[row].name;
     }
-    return obj[FFHPresetNameKey];
+    return obj;
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if (row < _presetsArray.count && object) {
-        NSMutableDictionary *obj = [_presetsArray[row] mutableCopy];
-        obj[FFHPresetNameKey] = object;
-        [_presetsArray replaceObjectAtIndex:row withObject:obj.copy];
+        //FFHPresetItem *obj = _presetsArray[row];
+        _presetsArray[row].name = object;
+        //[_presetsArray replaceObjectAtIndex:row withObject:obj.copy];
     }
 }
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -237,10 +261,10 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
 - (IBAction)duplicateButtonClicked:(id)sender {
     NSUInteger row = [_tableView selectedRow];
     if (row < _presetsArray.count) {
-        NSMutableDictionary *obj = [_presetsArray[row] mutableCopy];
-        NSString *name = obj[FFHPresetNameKey];
-        obj[FFHPresetNameKey] = [NSString stringWithFormat:@"%@ (Copy)", name];
-        [_presetsArray insertObject:obj.copy atIndex:row + 1];
+        FFHPresetItem *obj = [_presetsArray[row] copy];
+        NSString *name = obj.name;
+        obj.name = [NSString stringWithFormat:@"%@ (Copy)", name];
+        [_presetsArray insertObject:obj atIndex:row + 1];
         [_tableView reloadData];
     }
 }
@@ -254,15 +278,10 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
 }
 
 - (IBAction)addPresetButtonClicked:(id)sender {
-    NSDictionary *obj = @{FFHPresetNameKey: @"Empty Preset",
-                          FFHContainerKey: @"",
-                          FFHVideoOptionsKey: @"",
-                          FFHAudioOptionsKey: @"",
-                          FFHMiscOptionsKey: @"",
-                          FFHOtherOptionsKey: @"", };
+    FFHPresetItem *obj = [FFHPresetItem new];
     NSUInteger row = [_tableView selectedRow];
     if (row < _presetsArray.count) {
-        [_presetsArray insertObject:obj.copy atIndex:row + 1];
+        [_presetsArray insertObject:obj atIndex:row + 1];
     } else {
        [_presetsArray addObject:obj];
     }
@@ -278,12 +297,19 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
 }
 
 - (IBAction)presetEditorOKButtonClicked:(id)sender {
-    NSDictionary *obj = @{FFHPresetNameKey: _nameTextField.stringValue,
-                          FFHContainerKey: _containerTextField.stringValue,
-                          FFHVideoOptionsKey: _videoTextField.stringValue,
-                          FFHAudioOptionsKey: _audioTextField.stringValue,
-                          FFHMiscOptionsKey: _miscTextField.stringValue,
-                          FFHOtherOptionsKey: _otherTextField.stringValue, };
+//    NSDictionary *obj = @{FFHPresetNameKey: _nameTextField.stringValue,
+//                          FFHContainerKey: _containerTextField.stringValue,
+//                          FFHVideoOptionsKey: _videoTextField.stringValue,
+//                          FFHAudioOptionsKey: _audioTextField.stringValue,
+//                          FFHMiscOptionsKey: _miscTextField.stringValue,
+//                          FFHOtherOptionsKey: _otherTextField.stringValue, };
+    FFHPresetItem *obj = [FFHPresetItem new];
+    obj.name =  _nameTextField.stringValue;
+    obj.container = _containerTextField.stringValue;
+    obj.videoOptions = _videoTextField.stringValue;
+    obj.audioOptions = _audioTextField.stringValue;
+    obj.miscOptions = _miscTextField.stringValue;
+    obj.otherOptions = _otherTextField.stringValue;
     NSUInteger idx = [_presetsArray indexOfObject:_selectedPreset];
     if (idx != NSNotFound) {
         [_presetsArray replaceObjectAtIndex:idx withObject:obj];
@@ -293,11 +319,14 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     _selectedPreset = nil;
     [_tableView reloadData];
     [self.window close];
-    [_presetsArray writeToFile:_presetsFilePath atomically:YES];
+    //[_presetsArray writeToFile:_presetsFilePath atomically:YES];
+    [self savePresets];
 }
 
 - (IBAction)presetEditorCancelButtonClicked:(id)sender {
     _selectedPreset = nil;
     [self.window close];
 }
+
+
 @end

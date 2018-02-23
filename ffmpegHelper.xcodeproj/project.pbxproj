@@ -16,6 +16,8 @@
 		CE19BBAA2010F76E00CBDBA9 /* FFHMetadataEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19BBA82010F76E00CBDBA9 /* FFHMetadataEditor.xib */; };
 		CE259FF5202A15C600E7751E /* FFHPresetEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE259FF3202A15C600E7751E /* FFHPresetEditor.m */; };
 		CE259FF6202A15C600E7751E /* FFHPresetEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE259FF4202A15C600E7751E /* FFHPresetEditor.xib */; };
+		CE2B92E8203DEE2200ECA259 /* FFHPresetItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2B92E7203DEE2200ECA259 /* FFHPresetItem.m */; };
+		CE2B92EA203DF4EE00ECA259 /* extern.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2B92E9203DF4EE00ECA259 /* extern.m */; };
 		CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */; };
 		CE3FA9692007DE69002C5B7B /* FFHFileInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3FA9672007DE69002C5B7B /* FFHFileInfo.xib */; };
 		CE9D286F200BC5CC0006FAF5 /* presets.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE9D286E200BC5CC0006FAF5 /* presets.plist */; };
@@ -36,6 +38,9 @@
 		CE259FF2202A15C600E7751E /* FFHPresetEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHPresetEditor.h; sourceTree = "<group>"; };
 		CE259FF3202A15C600E7751E /* FFHPresetEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHPresetEditor.m; sourceTree = "<group>"; };
 		CE259FF4202A15C600E7751E /* FFHPresetEditor.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFHPresetEditor.xib; sourceTree = "<group>"; };
+		CE2B92E6203DEE2200ECA259 /* FFHPresetItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHPresetItem.h; sourceTree = "<group>"; };
+		CE2B92E7203DEE2200ECA259 /* FFHPresetItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHPresetItem.m; sourceTree = "<group>"; };
+		CE2B92E9203DF4EE00ECA259 /* extern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = extern.m; sourceTree = "<group>"; };
 		CE356C0F200AABB6001743AF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CE3FA9652007DE69002C5B7B /* FFHFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHFileInfo.h; sourceTree = "<group>"; };
 		CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHFileInfo.m; sourceTree = "<group>"; };
@@ -78,6 +83,9 @@
 				CE0010CB2003E531009A1BD4 /* FFHAppDelegate.m */,
 				CE259FF2202A15C600E7751E /* FFHPresetEditor.h */,
 				CE259FF3202A15C600E7751E /* FFHPresetEditor.m */,
+				CE2B92E6203DEE2200ECA259 /* FFHPresetItem.h */,
+				CE2B92E7203DEE2200ECA259 /* FFHPresetItem.m */,
+				CE2B92E9203DF4EE00ECA259 /* extern.m */,
 				CE259FF4202A15C600E7751E /* FFHPresetEditor.xib */,
 				CE19BBA62010F76E00CBDBA9 /* FFHMetadataEditor.h */,
 				CE19BBA72010F76E00CBDBA9 /* FFHMetadataEditor.m */,
@@ -177,10 +185,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE2B92EA203DF4EE00ECA259 /* extern.m in Sources */,
 				CE0010CF2003E531009A1BD4 /* main.m in Sources */,
 				CE0010CC2003E531009A1BD4 /* FFHAppDelegate.m in Sources */,
 				CE19BBA92010F76E00CBDBA9 /* FFHMetadataEditor.m in Sources */,
 				CE259FF5202A15C600E7751E /* FFHPresetEditor.m in Sources */,
+				CE2B92E8203DEE2200ECA259 /* FFHPresetItem.m in Sources */,
 				CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

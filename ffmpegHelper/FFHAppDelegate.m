@@ -13,6 +13,7 @@
 #import "FFHFileInfo.h"
 #import "FFHMetadataEditor.h"
 #import "FFHPresetEditor.h"
+#import "FFHPresetItem.h"
 
 
 #define DEFAULTS_KEY @"ffmpegOptions"
@@ -146,15 +147,9 @@
 NSString * const FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
 NSString * const FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $TWOPASS $LENGTH \"$OUTPUT\"";
 
-NSString * const FFHPresetNameKey = @"Name";
-NSString * const FFHVideoOptionsKey = @"Video";
-NSString * const FFHMiscOptionsKey = @"Misc";
-NSString * const FFHOtherOptionsKey = @"Other";
-NSString * const FFHAudioOptionsKey = @"Audio";
 NSString * const FFHStartTimeKey = @"StartTime";
 NSString * const FFHEndTimeKey = @"EndTime";
 NSString * const FFHLengthTimeKey = @"LengthTime";
-NSString * const FFHContainerKey = @"Container";
 
 NSString * const FFHMenuTwoPassKey = @"TwoPassEncoding";
 
@@ -336,10 +331,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     SEL action = @selector(presetsMenuItemClicked:);
     NSArray *presets = _presetEditor.userPresets;
     NSMenuItem *item = nil;
-    for (NSDictionary *obj in presets) {
-        item = [[NSMenuItem alloc] initWithTitle:obj[@"Name"] action:action keyEquivalent:@""];
+    for (FFHPresetItem *obj in presets) {
+        item = [[NSMenuItem alloc] initWithTitle:obj.name action:action keyEquivalent:@""];
         item.target = self;
-        item.representedObject = obj;
+        item.representedObject = obj.dictionary;
         [menu addItem:item];
     }
     for (NSMenuItem *itm in _defaultMenuItems) {
