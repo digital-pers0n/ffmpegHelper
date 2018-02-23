@@ -69,6 +69,8 @@
 		<string></string>
 		<key>Audio</key>
 		<string>-c:a copy</string>
+		<key>Container</key>
+		<string></string>
 	</dict>
 </array>
 </plist>
