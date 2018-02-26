@@ -142,14 +142,53 @@
 
 @end
 
+NSString * const FFHStartTimeKey = @"StartTime";
+NSString * const FFHEndTimeKey = @"EndTime";
+NSString * const FFHLengthTimeKey = @"LengthTime";
+
+#pragma mark - FFHCommandData Class
+
+@interface FFHCommandData : FFHPresetItem {
+    NSString *_timeStart;
+    NSString *_timeEnd;
+    NSString *_timeLength;
+}
+@property NSString *timeStart;
+@property NSString *timeEnd;
+@property NSString *timeLength;
+
+@end
+
+@implementation FFHCommandData
+- (NSDictionary *)dictionary {
+    NSMutableDictionary *dict = super.dictionary.mutableCopy;
+    dict[FFHStartTimeKey] = _timeStart;
+    dict[FFHEndTimeKey] = _timeEnd;
+    dict[FFHLengthTimeKey] = _timeLength;
+    return dict;
+}
+
+- (void)setDictionary:(NSDictionary *)dict {
+    super.dictionary = dict;
+    NSString *tmp = dict[FFHStartTimeKey];
+    if (tmp) {
+        _timeStart = tmp;
+    }
+    tmp = dict[FFHEndTimeKey];
+    if (tmp) {
+        _timeEnd = tmp;
+    }
+    tmp = dict[FFHLengthTimeKey];
+    if (tmp) {
+        _timeLength = tmp;
+    }
+}
+@end
+
 #pragma mark - FFHAppDelegate Class
 
 NSString * const FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
 NSString * const FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $TWOPASS $LENGTH \"$OUTPUT\"";
-
-NSString * const FFHStartTimeKey = @"StartTime";
-NSString * const FFHEndTimeKey = @"EndTime";
-NSString * const FFHLengthTimeKey = @"LengthTime";
 
 NSString * const FFHMenuTwoPassKey = @"TwoPassEncoding";
 
@@ -344,7 +383,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     [[NSUserDefaults standardUserDefaults] setBool:_twoPassEncoding forKey:(NSString *)FFHMenuTwoPassKey];
-    [[NSUserDefaults standardUserDefaults] setObject:_ffmpegCmdOptions forKey:DEFAULTS_KEY];
+    [[NSUserDefaults standardUserDefaults] setObject:_cmdOpts.dictionary forKey:DEFAULTS_KEY];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
