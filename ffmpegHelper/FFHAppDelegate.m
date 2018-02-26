@@ -216,8 +216,8 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     IBOutlet NSView *_baseView;
     
     IBOutlet NSTextField *_dropFileFeedbackTextField;
-
-    NSMutableDictionary *_ffmpegCmdOptions;
+    
+    FFHCommandData *_cmdOpts;
     BOOL _twoPassEncoding;
     
     FFHFileInfo *_fileInfoWindow;
@@ -275,26 +275,29 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     }
     _mpvOptions = @{NSWorkspaceLaunchConfigurationArguments:@[@"--loop=yes", @"--osd-fractions", @"--osd-level=3", path].mutableCopy};
     
-    _ffmpegCmdOptions = [[[NSUserDefaults standardUserDefaults] objectForKey:DEFAULTS_KEY] mutableCopy];
-    if (!_ffmpegCmdOptions) {
-        NSString *other, *nt = [NSString stringWithFormat:@"-threads %lu", [NSProcessInfo processInfo].processorCount];
+    _cmdOpts = [[FFHCommandData alloc] init];
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:DEFAULTS_KEY];
+    if (dict) {
+        _cmdOpts.dictionary = dict;
+    } else {
+        NSString *other, *s = @"", *nt = [NSString stringWithFormat:@"-threads %lu", [NSProcessInfo processInfo].processorCount];
         other = [NSString stringWithFormat:@"-trellis 1 -me_range 16 -i_qfactor 0.71 -b_strategy 1 -qmax 50 -qmin 0 -qdiff 4 -sn -y %@", nt];
-        _ffmpegCmdOptions = @{FFHVideoOptionsKey: @"-c:v libvpx-vp9  -b:v 2100k -bt 1280k -maxrate 5200k -bufsize 3200k",
-                              FFHAudioOptionsKey: @"-c:a libvorbis -b:a 128k -aq 9",
-                              FFHOtherOptionsKey: other,
-                              FFHMiscOptionsKey: @"",
-                              FFHStartTimeKey: @"",
-                              FFHEndTimeKey: @"",
-                              FFHLengthTimeKey: @"",
-                              FFHContainerKey: @"webm"}.mutableCopy;
+        _cmdOpts.videoOptions = @"-c:v libvpx-vp9  -b:v 2100k -bt 3280k -maxrate 5200k -bufsize 3200k";
+        _cmdOpts.audioOptions = @"-c:a libvorbis -b:a 128k -aq 9";
+        _cmdOpts.otherOptions = other;
+        _cmdOpts.miscOptions = s;
+        _cmdOpts.timeStart = s;
+        _cmdOpts.timeLength = s;
+        _cmdOpts.timeEnd = s;
+        _cmdOpts.container = @"webm";
     }
-    _videoOptionsTextField.stringValue = cmd(FFHVideoOptionsKey);
-    _audioOptionsTextField.stringValue = cmd(FFHAudioOptionsKey);
-    _miscOptionsTextField.stringValue = cmd(FFHMiscOptionsKey);
-    _otherOptionsTextField.stringValue = cmd(FFHOtherOptionsKey);
-    _startTimeTextField.stringValue = cmd(FFHStartTimeKey);
-    _endTimeTextField.stringValue = cmd(FFHEndTimeKey);
-    _lengthTimeTextField.stringValue = cmd(FFHLengthTimeKey);
+    _videoOptionsTextField.stringValue = _cmdOpts.videoOptions;
+    _audioOptionsTextField.stringValue = _cmdOpts.audioOptions;
+    _miscOptionsTextField.stringValue =  _cmdOpts.miscOptions;
+    _otherOptionsTextField.stringValue = _cmdOpts.otherOptions;
+    _startTimeTextField.stringValue = _cmdOpts.timeStart;
+    _endTimeTextField.stringValue = _cmdOpts.timeEnd;
+    _lengthTimeTextField.stringValue = _cmdOpts.timeLength;
     
     {
         SEL action = @selector(optionsMenuItemClicked:);
@@ -373,7 +376,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     for (FFHPresetItem *obj in presets) {
         item = [[NSMenuItem alloc] initWithTitle:obj.name action:action keyEquivalent:@""];
         item.target = self;
-        item.representedObject = obj.dictionary;
+        item.representedObject = obj;
         [menu addItem:item];
     }
     for (NSMenuItem *itm in _defaultMenuItems) {
@@ -409,9 +412,9 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                          @"LENGTH=\"%@\"\n"
                          @"TWOPASS=\"%@\"\n"
                          @"%@\n",
-                         _filePathTextField.stringValue, _outputFilePathTextField.stringValue, cmd(FFHVideoOptionsKey),
-                         cmd(FFHAudioOptionsKey),cmd(FFHOtherOptionsKey), cmd(FFHMiscOptionsKey), cmd(FFHStartTimeKey),
-                         cmd(FFHLengthTimeKey), twopass, string];
+                         _filePathTextField.stringValue, _outputFilePathTextField.stringValue, _cmdOpts.videoOptions,
+                         _cmdOpts.audioOptions, _cmdOpts.otherOptions, _cmdOpts.miscOptions, _cmdOpts.timeStart,
+                         _cmdOpts.timeLength, twopass, string];
     _commandTextView.string = [NSString stringWithFormat:command, _metadataEditorWindow.metadata];
 }
 
@@ -460,7 +463,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         _metadataEditorWindow.filepath = filename;
          filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
         _filePathTextField.stringValue = filename;
-        NSString *container = cmd(FFHContainerKey);
+        NSString *container = _cmdOpts.container;
         time_t t = 0;
         time(&t);
         struct tm  stm;
@@ -506,32 +509,32 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (IBAction)videoOptionsTextFieldChanged:(NSTextField *)sender {
-    cmd(FFHVideoOptionsKey) = sender.stringValue;
+    _cmdOpts.videoOptions = sender.stringValue;
     [self _updateCommandTextView];
 }
 
 - (IBAction)miscOptionsTextFieldChanged:(NSTextField *)sender {
-    cmd(FFHMiscOptionsKey) = sender.stringValue;
+    _cmdOpts.miscOptions = sender.stringValue;
     [self _updateCommandTextView];
 }
 
 - (IBAction)otherOptionsTextFieldChanged:(NSTextField *)sender {
-    cmd(FFHOtherOptionsKey) = sender.stringValue;
+    _cmdOpts.otherOptions = sender.stringValue;
     [self _updateCommandTextView];
 }
 
 - (IBAction)audioOptionsTextFieldChanged:(NSTextField *)sender {
-    cmd(FFHAudioOptionsKey) = sender.stringValue;
+    _cmdOpts.audioOptions = sender.stringValue;
     [self _updateCommandTextView];
 }
 
 - (IBAction)startTimeTextFieldChanged:(NSTextField *)sender {
-    cmd(FFHStartTimeKey) = sender.stringValue;
+    _cmdOpts.timeStart = sender.stringValue;
     [self _updateCommandTextView];
 }
 
 - (IBAction)endTimeTextFieldChanged:(NSTextField *)sender {
-    cmd(FFHEndTimeKey) = sender.stringValue;
+    _cmdOpts.timeEnd = sender.stringValue;
     double end = sender.floatValue;
     NSString *startString = _startTimeTextField.stringValue;
     NSUInteger length = startString.length;
@@ -544,7 +547,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (IBAction)lengthTimeTextFieldChanged:(NSTextField *)sender {
-    cmd(FFHLengthTimeKey) = sender.stringValue;
+    _cmdOpts.timeLength = sender.stringValue;
     [self _updateCommandTextView];
 }
 
@@ -614,24 +617,12 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         NSString *temp = obj[FFHContainerKey];
         if (temp.length && outfile.length) {
             _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
-            cmd(FFHContainerKey) = temp;
         }
-        temp = obj[FFHVideoOptionsKey];
-        _videoOptionsTextField.stringValue = temp;
-        cmd(FFHVideoOptionsKey) = temp;
-        
-        temp = obj[FFHAudioOptionsKey];
-        _audioOptionsTextField.stringValue = temp;
-        cmd(FFHAudioOptionsKey) = temp;
-        
-        temp = obj[FFHMiscOptionsKey];
-        _miscOptionsTextField.stringValue = temp;
-         cmd(FFHMiscOptionsKey) = temp;
-        
-        temp = obj[FFHOtherOptionsKey];
-        _otherOptionsTextField.stringValue = temp;
-        cmd(FFHOtherOptionsKey) = temp;
-        
+        _cmdOpts.dictionary = obj;
+        _videoOptionsTextField.stringValue = _cmdOpts.videoOptions;
+        _audioOptionsTextField.stringValue = _cmdOpts.audioOptions;
+        _miscOptionsTextField.stringValue = _cmdOpts.miscOptions;
+        _otherOptionsTextField.stringValue = _cmdOpts.otherOptions;
         [self _updateCommandTextView];
     } else {
         NSBeep();
@@ -644,35 +635,22 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                              FFHAudioOptionsKey: _audioOptionsTextField.stringValue,
                              FFHOtherOptionsKey: _otherOptionsTextField.stringValue,
                              FFHMiscOptionsKey: _miscOptionsTextField.stringValue,
-                             FFHContainerKey: cmd(FFHContainerKey)};
+                             FFHContainerKey: _cmdOpts.container};
     [preset writeToFile:path atomically:YES];
 }
 
 - (void)presetsMenuItemClicked:(NSMenuItem *)sender {
-    NSDictionary *obj = sender.representedObject;
+    FFHPresetItem *obj = sender.representedObject;
     NSString *outfile = [_outputFilePathTextField.stringValue stringByDeletingPathExtension];
-    NSString *temp = obj[FFHContainerKey];
+    NSString *temp = obj.container;
     if (temp.length) {
         _outputFilePathTextField.stringValue = [outfile stringByAppendingPathExtension:temp];
-        cmd(FFHContainerKey) = temp;
     }
-    
-    temp = obj[FFHVideoOptionsKey];
-    _videoOptionsTextField.stringValue = temp;
-    cmd(FFHVideoOptionsKey) = temp;
-    
-    temp = obj[FFHAudioOptionsKey];
-    _audioOptionsTextField.stringValue = temp;
-    cmd(FFHAudioOptionsKey) = temp;
-    
-    temp = obj[FFHMiscOptionsKey];
-    _miscOptionsTextField.stringValue = temp;
-    cmd(FFHMiscOptionsKey) = temp;
-    
-    temp = obj[FFHOtherOptionsKey];
-    _otherOptionsTextField.stringValue = temp;
-    cmd(FFHOtherOptionsKey) = temp;
-    
+    _cmdOpts.dictionary = obj.dictionary;
+    _videoOptionsTextField.stringValue = _cmdOpts.videoOptions;
+    _audioOptionsTextField.stringValue = _cmdOpts.audioOptions;
+    _miscOptionsTextField.stringValue = _cmdOpts.miscOptions;
+    _otherOptionsTextField.stringValue = _cmdOpts.otherOptions;
     [self _updateCommandTextView];
 }
 
