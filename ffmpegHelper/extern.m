@@ -15,3 +15,7 @@ NSString * const FFHMiscOptionsKey = @"Misc";
 NSString * const FFHOtherOptionsKey = @"Other";
 NSString * const FFHAudioOptionsKey = @"Audio";
 NSString * const FFHContainerKey = @"Container";
+
+
+// Preset Editor Notification
+NSString * const FFHPresetEditorDidChangeDataNotification = @"FFHPresetEditorDidChangeData";

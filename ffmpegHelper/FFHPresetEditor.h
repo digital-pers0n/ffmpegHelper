@@ -8,6 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+//Notifications
+extern NSString *FFHPresetEditorDidChangeDataNotification;
+
 @interface FFHPresetEditor : NSWindowController
 
 @property NSString *presetsFilePath;

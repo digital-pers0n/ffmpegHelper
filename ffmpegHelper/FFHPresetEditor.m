@@ -240,6 +240,7 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     // If the source was ourselves, we use our dragged nodes and do a reorder
     if ([self _dragIsLocalReorder:info]) {
         [self _performDragReorderWithDragInfo:info row:row];
+        [[NSNotificationCenter defaultCenter] postNotificationName:FFHPresetEditorDidChangeDataNotification object:self userInfo:nil];
     } else {
         //[self _performInsertWithDragInfo:info row:row];
     }
@@ -266,6 +267,7 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
         obj.name = [NSString stringWithFormat:@"%@ (Copy)", name];
         [_presetsArray insertObject:obj atIndex:row + 1];
         [_tableView reloadData];
+        [[NSNotificationCenter defaultCenter] postNotificationName:FFHPresetEditorDidChangeDataNotification object:self userInfo:nil];
     }
 }
 
@@ -286,6 +288,7 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
        [_presetsArray addObject:obj];
     }
     [_tableView reloadData];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FFHPresetEditorDidChangeDataNotification object:self userInfo:nil];
 }
 
 - (IBAction)removePresetButtonClicked:(id)sender {
@@ -293,6 +296,7 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     if (row < _presetsArray.count) {
         [_presetsArray removeObjectAtIndex:row];
         [_tableView reloadData];
+        [[NSNotificationCenter defaultCenter] postNotificationName:FFHPresetEditorDidChangeDataNotification object:self userInfo:nil];
     }
 }
 
@@ -321,11 +325,14 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     [self.window close];
     //[_presetsArray writeToFile:_presetsFilePath atomically:YES];
     [self savePresets];
+    [_presetsPanel makeKeyAndOrderFront:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FFHPresetEditorDidChangeDataNotification object:self userInfo:nil];
 }
 
 - (IBAction)presetEditorCancelButtonClicked:(id)sender {
     _selectedPreset = nil;
     [self.window close];
+    [_presetsPanel makeKeyAndOrderFront:nil];
 }
 
 
