@@ -232,6 +232,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     NSDictionary *_mpvOptions;
     NSAppleScript *_appleScript;
     NSArray *_defaultMenuItems;
+    NSMenu *_presetsMenu;
 }
 
 - (IBAction)outputFilePathTextFieldChanged:(NSTextField *)sender;
@@ -314,28 +315,26 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         
 
         //action = @selector(presetsMenuItemClicked:);
-        NSMenu *presetsMenu = [NSApp.mainMenu itemWithTag:1001].submenu;
-        presetsMenu.delegate = self;
-        
+        _presetsMenu = [NSApp.mainMenu itemWithTag:1001].submenu;
 //        for (NSDictionary *obj in presets) {
 //            item = [[NSMenuItem alloc] initWithTitle:obj[@"Name"] action:action keyEquivalent:@""];
 //            item.target = self;
 //            item.representedObject = obj;
 //            [presetsMenu addItem:item];
 //        }
-        [presetsMenu addItem:[NSMenuItem separatorItem]];
+        [_presetsMenu addItem:[NSMenuItem separatorItem]];
         item = [[NSMenuItem alloc] initWithTitle:@"Edit Presets" action:@selector(editPresetsMenuItemClicked:) keyEquivalent:@""];
         item.target = self;
-        [presetsMenu addItem:item];
-        [presetsMenu addItem:[NSMenuItem separatorItem]];
+        [_presetsMenu addItem:item];
+        [_presetsMenu addItem:[NSMenuItem separatorItem]];
         item = [[NSMenuItem alloc] initWithTitle:@"Save Preset" action:@selector(saveUserPresetMenuItemClicked:) keyEquivalent:@""];
         item.target = self;
-        [presetsMenu addItem:item];
+        [_presetsMenu addItem:item];
         
         item = [[NSMenuItem alloc] initWithTitle:@"Load Preset" action:@selector(loadUserPresetMenuItemClicked:) keyEquivalent:@""];
         item.target = self;
-        [presetsMenu addItem:item];
-        _defaultMenuItems = presetsMenu.itemArray;
+        [_presetsMenu addItem:item];
+        _defaultMenuItems = _presetsMenu.itemArray;
     }
     
     _dragView.delegate = self;
@@ -344,6 +343,9 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _metadataEditorWindow = [[FFHMetadataEditor alloc] init];
     _metadataEditorWindow.delegate = self;
     _presetEditor = [[FFHPresetEditor alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presetItemDidChange:)
+                                                 name:FFHPresetEditorDidChangeDataNotification object:_presetEditor];
     
     NSArray *presets;
     NSString *presetsPath = [kFFHPresetsListFilePath stringByExpandingTildeInPath];
@@ -363,28 +365,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _commandTextView.automaticSpellingCorrectionEnabled = NO;
     
     [self _updateCommandTextView];
-}
-
-- (void)editPresetsMenuItemClicked:(id)sender {
-    [_presetEditor showPresetsListPanel];
-}
-
-#pragma mark - NSMenuDelegate
-
-- (void)menuNeedsUpdate:(NSMenu *)menu {
-    [menu removeAllItems];
-    SEL action = @selector(presetsMenuItemClicked:);
-    NSArray *presets = _presetEditor.userPresets;
-    NSMenuItem *item = nil;
-    for (FFHPresetItem *obj in presets) {
-        item = [[NSMenuItem alloc] initWithTitle:obj.name action:action keyEquivalent:@""];
-        item.target = self;
-        item.representedObject = obj;
-        [menu addItem:item];
-    }
-    for (NSMenuItem *itm in _defaultMenuItems) {
-        [menu addItem:itm];
-    }
+    [self presetItemDidChange:nil];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -456,6 +437,24 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         if (str) {
             system(str);
         }
+    }
+}
+
+#pragma mark - FFHPresetEditor Notification
+
+- (void)presetItemDidChange:(NSNotification *)notification {
+    [_presetsMenu removeAllItems];
+    SEL action = @selector(presetsMenuItemClicked:);
+    NSArray *presets = _presetEditor.userPresets;
+    NSMenuItem *item = nil;
+    for (FFHPresetItem *obj in presets) {
+        item = [[NSMenuItem alloc] initWithTitle:obj.name action:action keyEquivalent:@""];
+        item.target = self;
+        item.representedObject = obj;
+        [_presetsMenu addItem:item];
+    }
+    for (NSMenuItem *itm in _defaultMenuItems) {
+        [_presetsMenu addItem:itm];
     }
 }
 
@@ -606,6 +605,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 #pragma mark - Presets Menu Actions
+
+- (void)editPresetsMenuItemClicked:(id)sender {
+    [_presetEditor showPresetsListPanel];
+}
 
 - (void)loadUserPresetMenuItemClicked:(id)sender {
     NSString *path = FFHUserPresetPath.stringByExpandingTildeInPath;
