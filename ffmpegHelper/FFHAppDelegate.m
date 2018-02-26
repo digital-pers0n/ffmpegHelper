@@ -182,6 +182,9 @@ NSString * const FFHLengthTimeKey = @"LengthTime";
     if (tmp) {
         _timeLength = tmp;
     }
+    if (!self.name) {
+        self.name = @"Empty";
+    }
 }
 @end
 
@@ -408,8 +411,8 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                          @"AFLAGS=\"%@\"\n"
                          @"OFLAGS=\"%@\"\n"
                          @"MFLAGS=\"%@\"\n"
-                         @"START=\"%@\"\n"
-                         @"LENGTH=\"%@\"\n"
+                         @"START=\"-ss %@\"\n"
+                         @"LENGTH=\"-t %@\"\n"
                          @"TWOPASS=\"%@\"\n"
                          @"%@\n",
                          _filePathTextField.stringValue, _outputFilePathTextField.stringValue, _cmdOpts.videoOptions,
@@ -536,14 +539,9 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (IBAction)endTimeTextFieldChanged:(NSTextField *)sender {
     _cmdOpts.timeEnd = sender.stringValue;
     double end = sender.floatValue;
-    NSString *startString = _startTimeTextField.stringValue;
-    NSUInteger length = startString.length;
-    if (length > 3) {
-        NSRange range = NSMakeRange(3, startString.length - 3);
-        double start = [startString substringWithRange:range].floatValue;
-        _lengthTimeTextField.stringValue = [NSString stringWithFormat:@"-t %.3f", end - start];
-        [self lengthTimeTextFieldChanged:_lengthTimeTextField];
-    }
+    double start = _startTimeTextField.floatValue;
+    _lengthTimeTextField.floatValue = end - start;
+    [self lengthTimeTextFieldChanged:_lengthTimeTextField];
 }
 
 - (IBAction)lengthTimeTextFieldChanged:(NSTextField *)sender {
