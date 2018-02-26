@@ -323,8 +323,6 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     _selectedPreset = nil;
     [_tableView reloadData];
     [self.window close];
-    //[_presetsArray writeToFile:_presetsFilePath atomically:YES];
-    [self savePresets];
     [_presetsPanel makeKeyAndOrderFront:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:FFHPresetEditorDidChangeDataNotification object:self userInfo:nil];
 }

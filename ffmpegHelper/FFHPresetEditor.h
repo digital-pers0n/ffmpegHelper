@@ -17,4 +17,6 @@ extern NSString *FFHPresetEditorDidChangeDataNotification;
 - (void)showPresetsListPanel;
 @property NSArray *userPresets;
 
+- (void)savePresets;
+
 @end

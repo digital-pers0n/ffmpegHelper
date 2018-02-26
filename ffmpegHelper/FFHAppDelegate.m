@@ -371,6 +371,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     [[NSUserDefaults standardUserDefaults] setBool:_twoPassEncoding forKey:(NSString *)FFHMenuTwoPassKey];
     [[NSUserDefaults standardUserDefaults] setObject:_cmdOpts.dictionary forKey:DEFAULTS_KEY];
+    [_presetEditor savePresets];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
