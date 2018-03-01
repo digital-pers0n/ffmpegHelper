@@ -76,6 +76,10 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
     
     NSData *outData = [[task.standardError fileHandleForReading] readDataToEndOfFile];
     NSArray *outArray = [[[NSString alloc] initWithData:outData encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\n"];
+    if (!outArray) {
+        NSLog(@"%s Error: cannot convert data to string",  __PRETTY_FUNCTION__);
+        return;
+    }
     __block NSUInteger hits = 0;
     NSUInteger count = _metadataFields.count;
     NSMutableIndexSet *indices = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)];

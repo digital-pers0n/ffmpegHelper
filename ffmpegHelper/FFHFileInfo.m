@@ -31,6 +31,13 @@
     
     NSData *outData = [[task.standardError fileHandleForReading] readDataToEndOfFile];
     NSArray *outArray = [[[NSString alloc] initWithData:outData encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\n"];
+    if (!outArray) {
+        outArray =  [[[NSString alloc] initWithData:outData encoding:[NSString defaultCStringEncoding]] componentsSeparatedByString:@"\n"];
+    }
+    if (!outArray) {
+        NSLog(@"%s Error: cannot convert data to string", __PRETTY_FUNCTION__);
+        return;
+    }
     NSMutableArray *infoArray = [NSMutableArray new];
     NSRange range;
     NSString *input = @"Duration:";
