@@ -247,6 +247,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (IBAction)playInputMenuItemClicked:(id)sender;
 - (IBAction)playOutputMenuItemClicked:(id)sender;
 - (IBAction)editMetadataMenuItemClicked:(id)sender;
+- (IBAction)updateOutputNameMenuItemClicked:(id)sender;
 
 
 @property (weak) IBOutlet NSWindow *window;
@@ -580,6 +581,33 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 - (IBAction)editMetadataMenuItemClicked:(id)sender {
     [_metadataEditorWindow showWindow:sender];
+}
+
+- (IBAction)updateOutputNameMenuItemClicked:(id)sender {
+    NSString *filename = _metadataEditorWindow.filepath;
+    if (filename.length) {
+        filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+        _filePathTextField.stringValue = filename;
+        NSString *container = _cmdOpts.container;
+        time_t t = 0;
+        time(&t);
+        struct tm  stm;
+        struct tm *p = &stm;
+        p = localtime(&t);
+        stm = *p;
+        NSString *suffix = [NSString stringWithFormat:@"-%i%.2i%.2i-%.2i%.2i%.2i",
+                            stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec];
+        NSString *ext = filename.pathExtension;
+        filename = filename.stringByDeletingPathExtension;
+        filename = [filename stringByAppendingString:suffix];
+        
+        if (container.length) {
+            filename = [filename stringByAppendingPathExtension:container];
+        } else {
+            filename = [filename stringByAppendingPathExtension:ext];
+        }
+        _outputFilePathTextField.stringValue = filename;
+    }
 }
 
 - (IBAction)runScriptMenuItemClicked:(id)sender {

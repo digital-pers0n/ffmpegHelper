@@ -67,6 +67,7 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
 }
 
 - (void)setFilepath:(NSString *)filePath {
+    _filepath = filePath;
     NSTask *task = [[NSTask alloc] init];
     NSPipe *outPipe = [[NSPipe alloc] init];
     task.launchPath = @"/usr/local/bin/ffprobe";

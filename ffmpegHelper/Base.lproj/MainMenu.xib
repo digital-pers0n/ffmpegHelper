@@ -128,7 +128,12 @@
                                     <action selector="editMetadataMenuItemClicked:" target="Voe-Tx-rLC" id="GC8-tJ-i54"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="WLM-w7-4gp"/>
+                            <menuItem title="Update Output Name" keyEquivalent="u" id="Qnf-n6-g3X">
+                                <connections>
+                                    <action selector="updateOutputNameMenuItemClicked:" target="Voe-Tx-rLC" id="YcF-A1-AIk"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="iMY-uy-C3N"/>
                             <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                 <connections>
                                     <action selector="performClose:" target="-1" id="HmO-Ls-i7Q"/>
@@ -832,7 +837,7 @@
                                     </textField>
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fMq-ki-ryf">
                                         <rect key="frame" x="524" y="67" width="96" height="19"/>
-                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-ss 32" drawsBackground="YES" id="xu9-MS-doz">
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="start" drawsBackground="YES" id="xu9-MS-doz">
                                             <numberFormatter key="formatter" formatterBehavior="default10_4" localizesFormat="NO" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="spF-eJ-vlJ"/>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -844,7 +849,7 @@
                                     </textField>
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="XmH-Ms-X5K">
                                         <rect key="frame" x="524" y="24" width="96" height="19"/>
-                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="-t 16" drawsBackground="YES" id="Z2e-w3-BSE">
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="length" drawsBackground="YES" id="Z2e-w3-BSE">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" localizesFormat="NO" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="8qV-7D-W0w"/>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
