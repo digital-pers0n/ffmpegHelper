@@ -464,6 +464,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 - (void)didRecieveFilename:(NSString *)filename {
     if (filename) {
+        [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
         _metadataEditorWindow.filepath = filename;
          filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
         _filePathTextField.stringValue = filename;
@@ -486,8 +487,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
             filename = [filename stringByAppendingPathExtension:ext];
         }
         _outputFilePathTextField.stringValue = filename;
-        [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
-        
     }
     [self _updateCommandTextView];
 }
