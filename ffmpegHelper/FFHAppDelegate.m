@@ -348,15 +348,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                                              selector:@selector(presetItemDidChange:)
                                                  name:FFHPresetEditorDidChangeDataNotification object:_presetEditor];
     
-    NSArray *presets;
-    NSString *presetsPath = [kFFHPresetsListFilePath stringByExpandingTildeInPath];
-    if ([shared fileExistsAtPath:presetsPath]) {
-        presets = [[NSArray alloc] initWithContentsOfFile:presetsPath];
-    } else {
-        presets = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"presets" ofType:@"plist"]];
-        _presetEditor.userPresets = presets;
-    }
-    
     // IB checkboxes do nothing
     _commandTextView.automaticDataDetectionEnabled = NO;
     _commandTextView.automaticLinkDetectionEnabled = NO;

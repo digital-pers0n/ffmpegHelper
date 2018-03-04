@@ -47,12 +47,15 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     if (self) {
         _presetsFilePath = [kFFHPresetsListFilePath stringByExpandingTildeInPath];
         NSFileManager *fm = [NSFileManager defaultManager];
-        if ([fm fileExistsAtPath:_presetsFilePath]) {
-           // _presetsArray = [[NSMutableArray alloc] initWithContentsOfFile:_presetsFilePath];
-            [self loadPresets];
-        } else {
-            _presetsArray = [NSMutableArray new];
+        if (![fm fileExistsAtPath:_presetsFilePath]) {
+            NSError *err = nil;
+            [fm copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"presets" ofType:@"plist"] toPath:_presetsFilePath error:&err];
+            if (err) {
+                NSLog(@"Error %s: %@", __PRETTY_FUNCTION__, err.localizedDescription);
+                return nil;
+            }
         }
+        [self loadPresets];
     }
     return self;
 }
