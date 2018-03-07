@@ -144,6 +144,11 @@ NSString * const kFFHLocalReorderPboardType = @"FFHLocalPboardType";
     return _presetsFilePath;
 }
 
+- (void)addPresetItem:(id)preset {
+    [_presetsArray addObject:preset];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FFHPresetEditorDidChangeDataNotification object:self userInfo:nil];
+}
+
 #pragma mark - NSTableView DataSource
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {

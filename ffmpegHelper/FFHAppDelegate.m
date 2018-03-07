@@ -328,11 +328,18 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         item.target = self;
         [_presetsMenu addItem:item];
         [_presetsMenu addItem:[NSMenuItem separatorItem]];
-        item = [[NSMenuItem alloc] initWithTitle:@"Save Preset" action:@selector(saveUserPresetMenuItemClicked:) keyEquivalent:@""];
+        item = [[NSMenuItem alloc] initWithTitle:@"Save Preset" action:@selector(saveUserPresetMenuItemClicked:) keyEquivalent:@"s"];
+        item.keyEquivalentModifierMask = NSCommandKeyMask;
+        item.target = self;
+        [_presetsMenu addItem:item];
+        item = [[NSMenuItem alloc] initWithTitle:@"Duplicate Preset" action:@selector(duplicateUserPresetMenuItemClicked:) keyEquivalent:@"s"];
+        item.keyEquivalentModifierMask = NSAlternateKeyMask | NSCommandKeyMask;
+        item.alternate = YES;
         item.target = self;
         [_presetsMenu addItem:item];
         
-        item = [[NSMenuItem alloc] initWithTitle:@"Load Preset" action:@selector(loadUserPresetMenuItemClicked:) keyEquivalent:@""];
+        item = [[NSMenuItem alloc] initWithTitle:@"Load Preset" action:@selector(loadUserPresetMenuItemClicked:) keyEquivalent:@"l"];
+        item.keyEquivalentModifierMask = NSCommandKeyMask;
         item.target = self;
         [_presetsMenu addItem:item];
         _defaultMenuItems = _presetsMenu.itemArray;
@@ -657,6 +664,25 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                              FFHMiscOptionsKey: _miscOptionsTextField.stringValue,
                              FFHContainerKey: _cmdOpts.container};
     [preset writeToFile:path atomically:YES];
+}
+
+- (void)duplicateUserPresetMenuItemClicked:(id)sender {
+    FFHPresetItem *item = [[FFHPresetItem alloc] init];
+    time_t t = 0;
+    time(&t);
+    struct tm  stm;
+    struct tm *p = &stm;
+    p = localtime(&t);
+    stm = *p;
+    NSString *name = [NSString stringWithFormat:@"Preset-%i%.2i%.2i-%.2i%.2i%.2i",
+                      stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec];
+    item.name = name;
+    item.videoOptions = _videoOptionsTextField.stringValue;
+    item.audioOptions = _audioOptionsTextField.stringValue;
+    item.miscOptions = _miscOptionsTextField.stringValue;
+    item.otherOptions = _otherOptionsTextField.stringValue;
+    item.container = _cmdOpts.container;
+    [_presetEditor addPresetItem:item];
 }
 
 - (void)presetsMenuItemClicked:(NSMenuItem *)sender {
