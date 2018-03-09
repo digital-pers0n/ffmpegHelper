@@ -246,6 +246,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (IBAction)getInfoMenuItemClicked:(id)sender;
 - (IBAction)playInputMenuItemClicked:(id)sender;
 - (IBAction)playOutputMenuItemClicked:(id)sender;
+- (IBAction)playSegmentMenuItemClicked:(id)sender;
 - (IBAction)editMetadataMenuItemClicked:(id)sender;
 - (IBAction)updateOutputNameMenuItemClicked:(id)sender;
 
@@ -571,6 +572,26 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     NSString *path = _outputFilePathTextField.stringValue;
     if (path.length) {
         [self _playWithMpv:path];
+    } else {
+        NSBeep();
+    }
+}
+
+- (IBAction)playSegmentMenuItemClicked:(id)sender {
+    NSString *path = _filePathTextField.stringValue;
+    if (path.length) {
+        NSMutableArray *args = _mpvOptions[NSWorkspaceLaunchConfigurationArguments];
+        float start = _startTimeTextField.floatValue, end = _endTimeTextField.floatValue;
+        NSString *arg1 = [NSString stringWithFormat:@"--start=%.3f", start],
+                 *arg2 = [NSString stringWithFormat:@"--ab-loop-a=%.3f", start],
+                 *arg3 = [NSString stringWithFormat:@"--ab-loop-b=%.3f", end];
+        [args addObject:arg1];
+        [args addObject:arg2];
+        [args addObject:arg3];
+        [self _playWithMpv:path];
+        [args removeObject:arg1];
+        [args removeObject:arg2];
+        [args removeObject:arg3];
     } else {
         NSBeep();
     }

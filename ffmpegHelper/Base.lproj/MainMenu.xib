@@ -117,6 +117,11 @@
                                     <action selector="playOutputMenuItemClicked:" target="Voe-Tx-rLC" id="Sfn-2c-kv3"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Play Segment" keyEquivalent="J" id="BTS-iy-6dD">
+                                <connections>
+                                    <action selector="playSegmentMenuItemClicked:" target="Voe-Tx-rLC" id="unN-Lc-lfb"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="8Jr-Yo-6wh"/>
                             <menuItem title="Edit Metadata..." keyEquivalent="d" id="1mi-5q-x5i">
                                 <connections>
