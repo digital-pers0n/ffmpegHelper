@@ -14,6 +14,8 @@
 #import "FFHMetadataEditor.h"
 #import "FFHPresetEditor.h"
 #import "FFHPresetItem.h"
+#import "FFHSegmentList.h"
+#import "FFHSegmentItem.h"
 
 
 #define DEFAULTS_KEY @"ffmpegOptions"
@@ -204,7 +206,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 };
 
 
-@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadaEditorDelegate, NSMenuDelegate> {
+@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadaEditorDelegate, FFHSegmentListDelegate, NSMenuDelegate> {
     IBOutlet FFHDragView *_dragView;
     IBOutlet NSTextField *_filePathTextField;
     IBOutlet NSTextField *_outputFilePathTextField;
@@ -226,6 +228,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     FFHFileInfo *_fileInfoWindow;
     FFHMetadataEditor *_metadataEditorWindow;
     FFHPresetEditor *_presetEditor;
+    FFHSegmentList *_segmentList;
     
     NSString *_scriptPath;
     NSMutableString *_convertScript;
@@ -355,6 +358,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(presetItemDidChange:)
                                                  name:FFHPresetEditorDidChangeDataNotification object:_presetEditor];
+    _segmentList = [[FFHSegmentList alloc] init];
+    [NSApp.mainMenu itemWithTag:1002].submenu = _segmentList.menu;
+    _segmentList.delegate = self;
+    
     
     // IB checkboxes do nothing
     _commandTextView.automaticDataDetectionEnabled = NO;
@@ -504,6 +511,49 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     [self _updateCommandTextView];
 }
 
+#pragma mark - FFHSegmentListDelegate 
+
+- (FFHSegmentItem *)addNewItemToList:(FFHSegmentList *)list {
+    FFHSegmentItem *item = [[FFHSegmentItem alloc] init];
+    item.startTime = _startTimeTextField.floatValue;
+    item.endTime = _endTimeTextField.floatValue;
+    return item;
+}
+
+- (void)segmentList:(FFHSegmentList *)list itemClicked:(FFHSegmentItem *)item {
+    NSEventModifierFlags flags = [NSEvent modifierFlags];
+    switch (flags) {
+        case NSAlternateKeyMask:
+        {
+            NSString *path = _filePathTextField.stringValue;
+            if (path.length) {
+                NSMutableArray *args = _mpvOptions[NSWorkspaceLaunchConfigurationArguments];
+                float start = item.startTime, end = item.endTime;
+                NSString *arg1 = [NSString stringWithFormat:@"--start=%.3f", start],
+                *arg2 = [NSString stringWithFormat:@"--ab-loop-a=%.3f", start],
+                *arg3 = [NSString stringWithFormat:@"--ab-loop-b=%.3f", end];
+                [args addObject:arg1];
+                [args addObject:arg2];
+                [args addObject:arg3];
+                [self _playWithMpv:path];
+                [args removeObject:arg1];
+                [args removeObject:arg2];
+                [args removeObject:arg3];
+            }
+        }
+            break;
+        case NSCommandKeyMask:
+            [list removeSegmentItem:item];
+            break;
+        default:
+            _startTimeTextField.floatValue = item.startTime;
+            [self startTimeTextFieldChanged:_startTimeTextField];
+            _endTimeTextField.floatValue = item.endTime;
+            [self endTimeTextFieldChanged:_endTimeTextField];
+            break;
+    }
+}
+
 #pragma mark - IBActions
 
 - (IBAction)outputFilePathTextFieldChanged:(NSTextField *)sender {
@@ -625,6 +675,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
             filename = [filename stringByAppendingPathExtension:ext];
         }
         _outputFilePathTextField.stringValue = filename;
+        [self _updateCommandTextView];
     }
 }
 
