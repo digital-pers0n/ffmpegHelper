@@ -693,6 +693,10 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Presets" id="SEw-T4-9gA"/>
                 </menuItem>
+                <menuItem title="Segments" tag="1002" id="1G2-ky-EIq">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Segments" id="GiL-80-06l"/>
+                </menuItem>
                 <menuItem title="Help" id="wpr-3q-Mcd">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
