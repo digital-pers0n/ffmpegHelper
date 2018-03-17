@@ -16,6 +16,8 @@
 #import "FFHPresetItem.h"
 #import "FFHSegmentList.h"
 #import "FFHSegmentItem.h"
+#import "FFHClipList.h"
+#import "FFHClipItem.h"
 
 
 #define DEFAULTS_KEY @"ffmpegOptions"
@@ -162,6 +164,17 @@ NSString * const FFHLengthTimeKey = @"LengthTime";
 @end
 
 @implementation FFHCommandData
+
+- (id)copyWithZone:(NSZone *)zone {
+    FFHPresetItem *itm = [super copyWithZone:zone];
+    FFHCommandData *data = [[FFHCommandData alloc] init];
+    data.dictionary = itm.dictionary;
+    data.timeStart = _timeStart.copy;
+    data.timeEnd = _timeEnd.copy;
+    data.timeLength = _timeLength.copy;
+    return data;
+}
+
 - (NSDictionary *)dictionary {
     NSMutableDictionary *dict = super.dictionary.mutableCopy;
     dict[FFHStartTimeKey] = _timeStart;
@@ -206,7 +219,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 };
 
 
-@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadaEditorDelegate, FFHSegmentListDelegate, NSMenuDelegate> {
+@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadaEditorDelegate, FFHSegmentListDelegate, FFHClipListDelegate, NSMenuDelegate> {
     IBOutlet FFHDragView *_dragView;
     IBOutlet NSTextField *_filePathTextField;
     IBOutlet NSTextField *_outputFilePathTextField;
@@ -229,6 +242,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     FFHMetadataEditor *_metadataEditorWindow;
     FFHPresetEditor *_presetEditor;
     FFHSegmentList *_segmentList;
+    FFHClipList *_clipList;
     
     NSString *_scriptPath;
     NSMutableString *_convertScript;
@@ -308,9 +322,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _endTimeTextField.stringValue = _cmdOpts.timeEnd;
     _lengthTimeTextField.stringValue = _cmdOpts.timeLength;
     
+    NSMenu *mainMenu = [NSApp mainMenu];
     {
         SEL action = @selector(optionsMenuItemClicked:);
-        NSMenu *menu = [NSApp.mainMenu itemWithTag:1000].submenu;
+        NSMenu *menu = [mainMenu itemWithTag:1000].submenu;
         NSMenuItem *item;
         item = [[NSMenuItem alloc] initWithTitle:@"Two Pass Encoding" action:action keyEquivalent:@""];
         item.tag = FFHMenuOption2PassTag;
@@ -320,7 +335,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         
 
         //action = @selector(presetsMenuItemClicked:);
-        _presetsMenu = [NSApp.mainMenu itemWithTag:1001].submenu;
+        _presetsMenu = [mainMenu itemWithTag:1001].submenu;
 //        for (NSDictionary *obj in presets) {
 //            item = [[NSMenuItem alloc] initWithTitle:obj[@"Name"] action:action keyEquivalent:@""];
 //            item.target = self;
@@ -348,20 +363,29 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         [_presetsMenu addItem:item];
         _defaultMenuItems = _presetsMenu.itemArray;
     }
+    {
     
-    _dragView.delegate = self;
-    _dropFileFeedbackTextField.hidden = YES;
-    _fileInfoWindow = [[FFHFileInfo alloc] init];
-    _metadataEditorWindow = [[FFHMetadataEditor alloc] init];
-    _metadataEditorWindow.delegate = self;
-    _presetEditor = [[FFHPresetEditor alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(presetItemDidChange:)
-                                                 name:FFHPresetEditorDidChangeDataNotification object:_presetEditor];
-    _segmentList = [[FFHSegmentList alloc] init];
-    [NSApp.mainMenu itemWithTag:1002].submenu = _segmentList.menu;
-    _segmentList.delegate = self;
-    
+        _dragView.delegate = self;
+        _dropFileFeedbackTextField.hidden = YES;
+        _fileInfoWindow = [[FFHFileInfo alloc] init];
+        _metadataEditorWindow = [[FFHMetadataEditor alloc] init];
+        _metadataEditorWindow.delegate = self;
+        _presetEditor = [[FFHPresetEditor alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(presetItemDidChange:)
+                                                     name:FFHPresetEditorDidChangeDataNotification object:_presetEditor];
+        NSString *toolTip = @"⌥+Click: Preview Segment, ⌘+Click: Delete Segment";
+        _segmentList = [[FFHSegmentList alloc] init];
+        [mainMenu itemWithTag:1002].submenu = _segmentList.menu;
+        _segmentList.delegate = self;
+        _segmentList.toolTip = toolTip;
+        
+        toolTip = @"⌥+Click: Convert Clip, ⌘+Click: Delete Clip";
+        _clipList = [[FFHClipList alloc] init];
+        [mainMenu itemWithTag:1003].submenu = _clipList.menu;
+        _clipList.delegate = self;
+        _clipList.toolTip = toolTip;
+    }
     
     // IB checkboxes do nothing
     _commandTextView.automaticDataDetectionEnabled = NO;
@@ -552,6 +576,70 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
             [self endTimeTextFieldChanged:_endTimeTextField];
             break;
     }
+}
+
+#pragma mark - FFHClipListDelegate 
+
+- (FFHClipItem *)addNewClipToList:(FFHClipList *)list {
+    FFHClipItem *item = [[FFHClipItem alloc] init];
+    item.inputFilePath = _filePathTextField.stringValue;
+    item.outputFilePath = _outputFilePathTextField.stringValue;
+    item.commandData = _cmdOpts.copy;
+    item.metadataString = _metadataEditorWindow.metadata;
+    return item;
+}
+- (void)clipList:(FFHClipList *)list itemClicked:(FFHClipItem *)item {
+    NSEventModifierFlags flags = [NSEvent modifierFlags];
+    switch (flags) {
+        case NSAlternateKeyMask:
+        {
+            NSString *string, *twopass = @"";
+            FFHCommandData *cmdData = item.commandData;
+            if (_twoPassEncoding) {
+                twopass = @"-pass 2";
+                string = [NSString stringWithFormat:@"%@\n%@\n", FFHTwoPassCommandString, FFHCommandString];
+            } else {
+                string = [NSString stringWithFormat:@"%@\n", FFHCommandString];
+            }
+            NSString *command = [NSString stringWithFormat:
+                                 @"INPUT=\"%@\"\n"
+                                 @"OUTPUT=\"%@\"\n"
+                                 @"VFLAGS=\"%@\"\n"
+                                 @"AFLAGS=\"%@\"\n"
+                                 @"OFLAGS=\"%@\"\n"
+                                 @"MFLAGS=\"%@\"\n"
+                                 @"START=\"-ss %@\"\n"
+                                 @"LENGTH=\"-t %@\"\n"
+                                 @"TWOPASS=\"%@\"\n"
+                                 @"%@\n",
+                                 item.inputFilePath, item.outputFilePath, cmdData.videoOptions,
+                                 cmdData.audioOptions, cmdData.otherOptions, cmdData.miscOptions, cmdData.timeStart,
+                                 cmdData.timeLength, twopass, string];
+            [_convertScript replaceCharactersInRange:NSMakeRange(0, _convertScript.length)
+                                          withString:[NSString stringWithFormat:command, item.metadataString]];
+            [_convertScript writeToFile:_scriptPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+            [_appleScript executeAndReturnError:nil];
+
+        }
+            break;
+        case NSCommandKeyMask:
+            [list removeClipItem:item];
+            break;
+        default:
+            _cmdOpts = item.commandData.copy;
+            _filePathTextField.stringValue = item.inputFilePath;
+            _outputFilePathTextField.stringValue = item.outputFilePath;
+            _videoOptionsTextField.stringValue = _cmdOpts.videoOptions;
+            _audioOptionsTextField.stringValue = _cmdOpts.audioOptions;
+            _miscOptionsTextField.stringValue =  _cmdOpts.miscOptions;
+            _otherOptionsTextField.stringValue = _cmdOpts.otherOptions;
+            _startTimeTextField.stringValue = _cmdOpts.timeStart;
+            _endTimeTextField.stringValue = _cmdOpts.timeEnd;
+            _lengthTimeTextField.stringValue = _cmdOpts.timeLength;
+            [self _updateCommandTextView];
+            break;
+    }
+
 }
 
 #pragma mark - IBActions
