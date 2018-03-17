@@ -47,6 +47,7 @@
     NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:title action:@selector(defaultItemAction:) keyEquivalent:@""];
     item.target = self;
     item.representedObject = si;
+    item.toolTip = _toolTip;
     [_menu addItem:item];
 }
 

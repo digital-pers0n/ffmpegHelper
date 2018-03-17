@@ -16,6 +16,7 @@
 - (void)removeSegmentItem:(FFHSegmentItem *)item;
 @property id<FFHSegmentListDelegate> delegate;
 @property (readonly) NSMenu *menu;
+@property NSString *toolTip;
 
 @end
 
