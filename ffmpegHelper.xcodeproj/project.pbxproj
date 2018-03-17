@@ -20,6 +20,8 @@
 		CE2B92EA203DF4EE00ECA259 /* extern.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2B92E9203DF4EE00ECA259 /* extern.m */; };
 		CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */; };
 		CE3FA9692007DE69002C5B7B /* FFHFileInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3FA9672007DE69002C5B7B /* FFHFileInfo.xib */; };
+		CE50BB7A205AF2BF0009982C /* FFHClipItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CE50BB79205AF2BF0009982C /* FFHClipItem.m */; };
+		CE50BB7D205AF8F60009982C /* FFHClipList.m in Sources */ = {isa = PBXBuildFile; fileRef = CE50BB7C205AF8F60009982C /* FFHClipList.m */; };
 		CE9D286F200BC5CC0006FAF5 /* presets.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE9D286E200BC5CC0006FAF5 /* presets.plist */; };
 		CEEF7AFC20570854007F16FF /* FFHSegmentItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEF7AFB20570854007F16FF /* FFHSegmentItem.m */; };
 		CEEF7AFF20570B86007F16FF /* FFHSegmentList.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEF7AFE20570B86007F16FF /* FFHSegmentList.m */; };
@@ -47,6 +49,10 @@
 		CE3FA9652007DE69002C5B7B /* FFHFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHFileInfo.h; sourceTree = "<group>"; };
 		CE3FA9662007DE69002C5B7B /* FFHFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHFileInfo.m; sourceTree = "<group>"; };
 		CE3FA9672007DE69002C5B7B /* FFHFileInfo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFHFileInfo.xib; sourceTree = "<group>"; };
+		CE50BB78205AF2BF0009982C /* FFHClipItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHClipItem.h; sourceTree = "<group>"; };
+		CE50BB79205AF2BF0009982C /* FFHClipItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHClipItem.m; sourceTree = "<group>"; };
+		CE50BB7B205AF8F60009982C /* FFHClipList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHClipList.h; sourceTree = "<group>"; };
+		CE50BB7C205AF8F60009982C /* FFHClipList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHClipList.m; sourceTree = "<group>"; };
 		CE9D286E200BC5CC0006FAF5 /* presets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = presets.plist; sourceTree = "<group>"; };
 		CEEF7AFA20570854007F16FF /* FFHSegmentItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHSegmentItem.h; sourceTree = "<group>"; };
 		CEEF7AFB20570854007F16FF /* FFHSegmentItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHSegmentItem.m; sourceTree = "<group>"; };
@@ -87,6 +93,10 @@
 			children = (
 				CE0010CA2003E531009A1BD4 /* FFHAppDelegate.h */,
 				CE0010CB2003E531009A1BD4 /* FFHAppDelegate.m */,
+				CE50BB78205AF2BF0009982C /* FFHClipItem.h */,
+				CE50BB79205AF2BF0009982C /* FFHClipItem.m */,
+				CE50BB7B205AF8F60009982C /* FFHClipList.h */,
+				CE50BB7C205AF8F60009982C /* FFHClipList.m */,
 				CEEF7AFA20570854007F16FF /* FFHSegmentItem.h */,
 				CEEF7AFB20570854007F16FF /* FFHSegmentItem.m */,
 				CEEF7AFD20570B86007F16FF /* FFHSegmentList.h */,
@@ -202,6 +212,8 @@
 				CE0010CC2003E531009A1BD4 /* FFHAppDelegate.m in Sources */,
 				CE19BBA92010F76E00CBDBA9 /* FFHMetadataEditor.m in Sources */,
 				CE259FF5202A15C600E7751E /* FFHPresetEditor.m in Sources */,
+				CE50BB7A205AF2BF0009982C /* FFHClipItem.m in Sources */,
+				CE50BB7D205AF8F60009982C /* FFHClipList.m in Sources */,
 				CE2B92E8203DEE2200ECA259 /* FFHPresetItem.m in Sources */,
 				CE3FA9682007DE69002C5B7B /* FFHFileInfo.m in Sources */,
 			);
