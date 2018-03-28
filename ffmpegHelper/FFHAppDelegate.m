@@ -496,6 +496,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     if (filename) {
         [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
         _metadataEditorWindow.filepath = filename;
+        _fileInfoWindow.filePath = filename;
          filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
         _filePathTextField.stringValue = filename;
         NSString *container = _cmdOpts.container;
@@ -676,7 +677,13 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     double end = sender.floatValue;
     double start = _startTimeTextField.floatValue;
     _lengthTimeTextField.floatValue = end - start;
-    [self lengthTimeTextFieldChanged:_lengthTimeTextField];
+    if (end == 0) {
+        _cmdOpts.timeLength = _fileInfoWindow.duration;
+    } else {
+        _cmdOpts.timeLength = _lengthTimeTextField.stringValue;
+    }
+    [self _updateCommandTextView];
+    //[self lengthTimeTextFieldChanged:_lengthTimeTextField];
 }
 
 - (IBAction)lengthTimeTextFieldChanged:(NSTextField *)sender {
@@ -685,14 +692,14 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (IBAction)getInfoMenuItemClicked:(id)sender {
-    
-    NSString *path = _filePathTextField.stringValue;
-    if (path.length) {
-        [_fileInfoWindow.window makeKeyAndOrderFront:nil];
-        [_fileInfoWindow showFileInfo:_filePathTextField.stringValue];
-    } else {
-        NSBeep();
-    }
+    [_fileInfoWindow showFileInfo];
+//    NSString *path = _filePathTextField.stringValue;
+//    if (path.length) {
+//        [_fileInfoWindow.window makeKeyAndOrderFront:nil];
+//        [_fileInfoWindow showFileInfo:_filePathTextField.stringValue];
+//    } else {
+//        NSBeep();
+//    }
 }
 
 - (IBAction)playInputMenuItemClicked:(id)sender {
