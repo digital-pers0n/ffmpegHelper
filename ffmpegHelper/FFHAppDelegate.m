@@ -501,12 +501,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         NSString *container = _cmdOpts.container;
         time_t t = 0;
         time(&t);
-        struct tm  stm;
-        struct tm *p = &stm;
-        p = localtime(&t);
-        stm = *p;
+        struct tm  *stm;
+        stm = localtime(&t);
         NSString *suffix = [NSString stringWithFormat:@"-%i%.2i%.2i-%.2i%.2i%.2i",
-                            stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec];
+                            stm->tm_year + 1900, stm->tm_mon + 1, stm->tm_mday, stm->tm_hour, stm->tm_min, stm->tm_sec];
         NSString *ext = filename.pathExtension;
         filename = filename.stringByDeletingPathExtension;
         filename = [filename stringByAppendingString:suffix];
@@ -747,12 +745,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         NSString *container = _cmdOpts.container;
         time_t t = 0;
         time(&t);
-        struct tm  stm;
-        struct tm *p = &stm;
-        p = localtime(&t);
-        stm = *p;
+        struct tm  *stm;
+        stm = localtime(&t);
         NSString *suffix = [NSString stringWithFormat:@"-%i%.2i%.2i-%.2i%.2i%.2i",
-                            stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec];
+                            stm->tm_year + 1900, stm->tm_mon + 1, stm->tm_mday, stm->tm_hour, stm->tm_min, stm->tm_sec];
         NSString *ext = filename.pathExtension;
         filename = filename.stringByDeletingPathExtension;
         filename = [filename stringByAppendingString:suffix];
@@ -830,12 +826,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     FFHPresetItem *item = [[FFHPresetItem alloc] init];
     time_t t = 0;
     time(&t);
-    struct tm  stm;
-    struct tm *p = &stm;
-    p = localtime(&t);
-    stm = *p;
+    struct tm  *stm;
+    stm = localtime(&t);
     NSString *name = [NSString stringWithFormat:@"Preset-%i%.2i%.2i-%.2i%.2i%.2i",
-                      stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec];
+                      stm->tm_year + 1900, stm->tm_mon + 1, stm->tm_mday, stm->tm_hour, stm->tm_min, stm->tm_sec];
     item.name = name;
     item.videoOptions = _videoOptionsTextField.stringValue;
     item.audioOptions = _audioOptionsTextField.stringValue;
