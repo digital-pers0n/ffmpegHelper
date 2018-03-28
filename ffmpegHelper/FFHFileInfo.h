@@ -10,6 +10,14 @@
 
 @interface FFHFileInfo : NSWindowController
 
+@property NSString *filePath;
+@property (readonly) NSString *fileInfoString;
+@property (readonly) NSString *duration;
+@property (readonly) NSString *bitrate;
+@property (readonly) NSUInteger numberOfStreams;
+@property (readonly) NSArray *streams;
+
+- (void)showFileInfo;
 - (void)showFileInfo:(NSString *)filePath;
 
 @end

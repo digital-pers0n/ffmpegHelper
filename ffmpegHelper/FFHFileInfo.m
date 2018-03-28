@@ -8,57 +8,87 @@
 
 #import "FFHFileInfo.h"
 
+void _findStreams(NSString *str, NSMutableArray *streams);
+
 @interface FFHFileInfo () {
     IBOutlet NSTextField *_fileInfoTextField;
     NSString *_fileInfoString;
+    NSString *_filePath;
+    NSMutableArray *_streams;
 }
 
 @end
 
 @implementation FFHFileInfo
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _duration = @"";
+        _streams = [NSMutableArray new];
+        _bitrate = @"";
+    }
+    return self;
+}
+
 - (NSString *)windowNibName {
     return self.className;
 }
 
-- (void)showFileInfo:(NSString *)filePath {
+- (void)setFilePath:(NSString *)filePath {
+    _filePath = filePath;
     NSTask *task = [[NSTask alloc] init];
     NSPipe *outPipe = [[NSPipe alloc] init];
     task.launchPath = @"/usr/local/bin/ffprobe";
-    task.arguments = @[filePath];
+    task.arguments = @[@"-hide_banner", @"-i", filePath];
     task.standardError = outPipe;
     [task launch];
     
     NSData *outData = [[task.standardError fileHandleForReading] readDataToEndOfFile];
-    NSArray *outArray = [[[NSString alloc] initWithData:outData encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\n"];
-    if (!outArray) {
-        outArray =  [[[NSString alloc] initWithData:outData encoding:[NSString defaultCStringEncoding]] componentsSeparatedByString:@"\n"];
-    }
-    if (!outArray) {
-        NSLog(@"%s Error: cannot convert data to string", __PRETTY_FUNCTION__);
-        return;
-    }
-    NSMutableArray *infoArray = [NSMutableArray new];
-    NSRange range;
-    NSString *input = @"Duration:";
-    for (NSString *s in outArray) {
-        range = [s rangeOfString:input];
-        if (range.length) {
-            NSUInteger idx = [outArray indexOfObject:s], count = outArray.count, i;
-            
-            for (i = idx; i < count - 1; i++) {
-                input = outArray[i];
-                [infoArray addObject:input];
-            }
-            break;
+    NSString *rawInfo = [[NSString alloc] initWithData:outData encoding:NSUTF8StringEncoding];
+    if (!rawInfo) {
+        rawInfo = [[NSString alloc] initWithData:outData encoding:[NSString defaultCStringEncoding]];
+        if (!rawInfo) {
+            NSLog(@"%s Error: cannot convert data to string", __PRETTY_FUNCTION__);
+            return;
         }
     }
-    
-    _fileInfoString = [infoArray componentsJoinedByString:@"\n"];
-    if (self.windowLoaded && _fileInfoString) {
+    NSRange r1 , r2 = {0, rawInfo.length};
+    r1 = [rawInfo rangeOfString:@"Duration: " options:NSLiteralSearch range:r2];
+    if (r1.length) {
+        _fileInfoString = [rawInfo substringWithRange:(NSRange){r1.location, r2.length - r1.location}];
+        r2 = [_fileInfoString rangeOfString:@","];
+        _duration = [_fileInfoString substringWithRange:(NSRange){r1.length, r2.location - r1.length}];
+        
+        r1 = [_fileInfoString rangeOfString:@"bitrate: "];
+        r2 = [_fileInfoString rangeOfString:@"\n"];
+        _bitrate = [_fileInfoString substringWithRange:(NSRange){r1.length + r1.location, r2.location - r1.location - r1.length}];
+        
+        [_streams removeAllObjects];
+        _findStreams(_fileInfoString, _streams);
+        _numberOfStreams = _streams.count;
+    } else {
+        _fileInfoString = rawInfo;
+        _duration = @"";
+        _bitrate = @"";
+        _numberOfStreams = 0;
+        [_streams removeAllObjects];
+    }
+}
+- (NSString *)filePath {
+    return _filePath;
+}
+
+- (void)showFileInfo {
+    [self.window makeKeyAndOrderFront:nil];
+    if (_fileInfoString) {
         _fileInfoTextField.stringValue = _fileInfoString;
     }
+}
 
+- (void)showFileInfo:(NSString *)filePath {
+    self.filePath = filePath;
+    [self showFileInfo];
 }
 
 - (void)windowDidLoad {
@@ -68,3 +98,19 @@
 }
 
 @end
+
+void _findStreams(NSString *str, NSMutableArray *streams) {
+    NSString *stream;
+    NSRange r1 = [str rangeOfString:@"Stream #" options:NSLiteralSearch];
+    if (r1.length) {
+        stream = [str substringWithRange:(NSRange){r1.location, str.length - r1.location}];
+        r1.location = 0;
+        NSRange r2 = [stream rangeOfString:@"\n"];
+        NSRange r3 = {r1.location, r2.location};
+        [streams addObject:[stream substringWithRange:r3]];
+        stream = [stream substringWithRange:(NSRange){r3.length, stream.length - r3.length}];
+        _findStreams(stream, streams);
+    } else {
+        return;
+    }
+}
