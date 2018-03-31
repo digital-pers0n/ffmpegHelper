@@ -32,9 +32,9 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
     IBOutlet NSTextField *_commentTextField;
     
     NSString *_filepath;
-    NSArray *_metadataFields;
-    NSMutableDictionary *_cachedMetadata;
-    
+    FFHMetadataItem *_cachedMetadata;
+    NSString *_metadataString;
+    NSData *_data;
 }
 - (IBAction)titleTextFieldChanged:(NSTextField *)sender;
 - (IBAction)artistTextFieldChanged:(NSTextField *)sender;
@@ -67,11 +67,7 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
 {
     self = [super init];
     if (self) {
-        _cachedMetadata = [NSMutableDictionary new];
-        _metadataFields = @[@"title           :", @"artist          :", @"date            :", @"comment         :"];
-        for (NSString *s in _metadataFields) {
-            _cachedMetadata[s] = @"";
-        }
+        _cachedMetadata = [FFHMetadataItem new];
     }
     return self;
 }
@@ -85,17 +81,10 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
 }
 
 -(void)_updateViews {
-    [_cachedMetadata enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        if ([key isEqualToString:_metadataFields[FFHMetadataArtist]]) {
-            _artistTextField.stringValue = obj;
-        } else if ([key isEqualToString:_metadataFields[FFHMetadataTitle]]) {
-            _titleTextField.stringValue = obj;
-        } else if ([key isEqualToString:_metadataFields[FFHMetadataDate]]) {
-            _dateTextField.stringValue = obj;
-        } else if ([key isEqualToString:_metadataFields[FFHMetadataComment]]) {
-            _commentTextField.stringValue = obj;
-        }
-    }];
+    _artistTextField.stringValue = _cachedMetadata.artist;
+    _titleTextField.stringValue = _cachedMetadata.title;
+    _dateTextField.stringValue = _cachedMetadata.date;
+    _commentTextField.stringValue = _cachedMetadata.comment;
 }
 
 - (NSString *)metadata  {
@@ -104,16 +93,16 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
                         @"-metadata artist=\"%@\" "
                         @"-metadata date=\"%@\" "
                         @"-metadata comment=\"%@\"",
-                        _cachedMetadata[_metadataFields[FFHMetadataTitle]],_cachedMetadata[_metadataFields[FFHMetadataArtist]],
-                        _cachedMetadata[_metadataFields[FFHMetadataDate]], _cachedMetadata[_metadataFields[FFHMetadataComment]]];
+                        _cachedMetadata.title, _cachedMetadata.artist,
+                        _cachedMetadata.date, _cachedMetadata.comment];
     return result;
 }
 
 - (void)_updateCachedMetadata {
-    _cachedMetadata[_metadataFields[FFHMetadataArtist]] = _artistTextField.stringValue;
-    _cachedMetadata[_metadataFields[FFHMetadataTitle]] = _titleTextField.stringValue;
-    _cachedMetadata[_metadataFields[FFHMetadataDate]] = _dateTextField.stringValue;
-    _cachedMetadata[_metadataFields[FFHMetadataComment]] = _commentTextField.stringValue;
+    _cachedMetadata.artist = _artistTextField.stringValue;
+    _cachedMetadata.title = _titleTextField.stringValue;
+    _cachedMetadata.date = _dateTextField.stringValue;
+    _cachedMetadata.comment = _commentTextField.stringValue;
     [_delegate metadataDidChange];
 }
 
