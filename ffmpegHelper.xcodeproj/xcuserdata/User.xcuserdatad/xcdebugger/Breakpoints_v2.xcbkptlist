@@ -10,61 +10,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ffmpegHelper/FFHMetadataEditor.m"
-            timestampString = "538414519.142185"
+            timestampString = "544207069.7964211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
             landmarkName = "-showWindow:"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ffmpegHelper/FFHMetadataEditor.m"
-            timestampString = "538414519.142185"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "-setFilepath:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[FFHMetadataEditor setFilepath:]"
-                  moduleName = "ffmpegHelper"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/MacHD/Developer/Projects/2018/ffmpegHelper/ffmpegHelper/FFHMetadataEditor.m"
-                  timestampString = "538162922.9187911"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "73"
-                  endingLineNumber = "73"
-                  offsetFromSymbolStart = "1567">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__33-[FFHMetadataEditor setFilepath:]_block_invoke"
-                  moduleName = "ffmpegHelper"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/MacHD/Developer/Projects/2018/ffmpegHelper/ffmpegHelper/FFHMetadataEditor.m"
-                  timestampString = "538162922.919203"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "73"
-                  endingLineNumber = "73"
-                  offsetFromSymbolStart = "19">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

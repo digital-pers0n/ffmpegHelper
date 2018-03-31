@@ -25,6 +25,11 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
     FFHMetadataComment,
 };
 
+NSString * const FFHMetadataTitleString = @"title           : ";
+NSString * const FFHMetadataArtistString =  @"artist          : ";
+NSString * const FFHMetadataDateString =  @"date            : ";
+NSString * const FFHMetadataCommentString = @"comment         : ";
+
 @interface FFHMetadataEditor () {
     IBOutlet NSTextField *_titleTextField;
     IBOutlet NSTextField *_artistTextField;
@@ -70,6 +75,50 @@ typedef NS_ENUM(NSUInteger, FFHMetadata) {
         _cachedMetadata = [FFHMetadataItem new];
     }
     return self;
+}
+
+static inline NSString *_getMetadata(NSString *metadata, NSUInteger *length, NSString *field, NSString *empty) {
+    NSRange r1, r2;
+    NSString *result;
+    r1 = [metadata rangeOfString:field];
+    if (r1.length) {
+        r2 = [metadata rangeOfString:@"\n" options:NSCaseInsensitiveSearch range:(NSRange){r1.location, *length - r1.location}];
+        NSUInteger start = r1.location + r1.length;
+        result = [metadata substringWithRange:(NSRange){start, r2.location - start}];
+    } else {
+        result = empty;
+    }
+    return result;
+}
+
+- (void)setData:(NSData *)outData {
+    NSString *rawInfo = [[NSString alloc] initWithData:outData encoding:NSUTF8StringEncoding];
+    if (!rawInfo) {
+        NSLog(@"%s Error: cannot convert data to string", __PRETTY_FUNCTION__);
+        return;
+    }
+    NSRange r1, r2 = {0, rawInfo.length}, r3;
+    r1 = [rawInfo rangeOfString:@"Metadata:" options:NSLiteralSearch range:r2];
+    if (r1.length) {
+        r3 = [rawInfo rangeOfString:@"Duration: " options:NSLiteralSearch range:r2];
+        if (r3.length) {
+            _metadataString = [rawInfo substringWithRange:(NSRange){r1.location + r1.length + 1, r3.location - r1.length - r1.location - 1}];
+            NSUInteger length = _metadataString.length;
+            NSString *empty = @"";
+            _cachedMetadata.title = _getMetadata(_metadataString, &length, FFHMetadataTitleString, empty);
+            _cachedMetadata.artist = _getMetadata(_metadataString, &length, FFHMetadataArtistString, empty);
+            _cachedMetadata.date = _getMetadata(_metadataString, &length, FFHMetadataDateString, empty);
+            _cachedMetadata.comment = _getMetadata(_metadataString, &length, FFHMetadataCommentString, empty);
+            if ([self isWindowLoaded]) {
+                [self _updateViews];
+            }
+        }
+    }
+    
+}
+
+- (NSData *)data {
+    return _data;
 }
 
 - (void)setFilepath:(NSString *)filePath {
