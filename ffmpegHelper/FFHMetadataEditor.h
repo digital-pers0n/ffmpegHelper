@@ -14,6 +14,7 @@
 
 @property id<FFHMetadaEditorDelegate> delegate;
 
+@property NSData *data;
 @property NSString *filepath;
 @property (readonly) NSString *metadata;
 

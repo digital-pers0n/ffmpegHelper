@@ -15,6 +15,7 @@ void _findStreams(NSString *str, NSMutableArray *streams);
     NSString *_fileInfoString;
     NSString *_filePath;
     NSMutableArray *_streams;
+    NSData *_data;
 }
 
 @end
@@ -35,19 +36,11 @@ void _findStreams(NSString *str, NSMutableArray *streams);
     return self.className;
 }
 
-- (void)setFilePath:(NSString *)filePath {
-    _filePath = filePath;
-    NSTask *task = [[NSTask alloc] init];
-    NSPipe *outPipe = [[NSPipe alloc] init];
-    task.launchPath = @"/usr/local/bin/ffprobe";
-    task.arguments = @[@"-hide_banner", @"-i", filePath];
-    task.standardError = outPipe;
-    [task launch];
-    
-    NSData *outData = [[task.standardError fileHandleForReading] readDataToEndOfFile];
-    NSString *rawInfo = [[NSString alloc] initWithData:outData encoding:NSUTF8StringEncoding];
+- (void)setData:(NSData *)data {
+    _data = data;
+    NSString *rawInfo = [[NSString alloc] initWithData:_data encoding:NSUTF8StringEncoding];
     if (!rawInfo) {
-        rawInfo = [[NSString alloc] initWithData:outData encoding:[NSString defaultCStringEncoding]];
+        rawInfo = [[NSString alloc] initWithData:_data encoding:[NSString defaultCStringEncoding]];
         if (!rawInfo) {
             NSLog(@"%s Error: cannot convert data to string", __PRETTY_FUNCTION__);
             return;
@@ -74,6 +67,23 @@ void _findStreams(NSString *str, NSMutableArray *streams);
         _numberOfStreams = 0;
         [_streams removeAllObjects];
     }
+}
+
+- (NSData *)data {
+    return _data;
+}
+
+- (void)setFilePath:(NSString *)filePath {
+    _filePath = filePath;
+    NSTask *task = [[NSTask alloc] init];
+    NSPipe *outPipe = [[NSPipe alloc] init];
+    task.launchPath = @"/usr/local/bin/ffprobe";
+    task.arguments = @[@"-hide_banner", @"-i", filePath];
+    task.standardError = outPipe;
+    [task launch];
+    
+    self.data = [[task.standardError fileHandleForReading] readDataToEndOfFile];
+   
 }
 - (NSString *)filePath {
     return _filePath;

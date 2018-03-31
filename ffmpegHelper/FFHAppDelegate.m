@@ -495,8 +495,18 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (void)didRecieveFilename:(NSString *)filename {
     if (filename) {
         [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
-        _metadataEditorWindow.filepath = filename;
-        _fileInfoWindow.filePath = filename;
+        {
+            NSTask *task = [[NSTask alloc] init];
+            NSPipe *outPipe = [[NSPipe alloc] init];
+            task.launchPath = @"/usr/local/bin/ffprobe";
+            task.arguments = @[@"-hide_banner", @"-i", filename];
+            task.standardError = outPipe;
+            [task launch];
+            NSData *data = [[task.standardError fileHandleForReading] readDataToEndOfFile];
+            _metadataEditorWindow.filepath = filename;
+            _metadataEditorWindow.data = data;
+            _fileInfoWindow.data = data;
+        }
          filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
         _filePathTextField.stringValue = filename;
         NSString *container = _cmdOpts.container;

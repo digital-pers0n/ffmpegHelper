@@ -10,6 +10,7 @@
 
 @interface FFHFileInfo : NSWindowController
 
+@property NSData *data; // ffprobe output
 @property NSString *filePath;
 @property (readonly) NSString *fileInfoString;
 @property (readonly) NSString *duration;
