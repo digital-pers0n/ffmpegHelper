@@ -8,6 +8,16 @@
 
 #import "FFHMetadataEditor.h"
 
+@interface FFHMetadataItem : NSObject
+@property NSString *artist;
+@property NSString *date;
+@property NSString *title;
+@property NSString *comment;
+@end
+
+@implementation FFHMetadataItem
+@end
+
 typedef NS_ENUM(NSUInteger, FFHMetadata) {
     FFHMetadataTitle = 0,
     FFHMetadataArtist,
