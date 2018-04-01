@@ -8,11 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@protocol FFHMetadaEditorDelegate;
+@protocol FFHMetadataEditorDelegate;
 
 @interface FFHMetadataEditor : NSWindowController
 
-@property id<FFHMetadaEditorDelegate> delegate;
+@property id<FFHMetadataEditorDelegate> delegate;
 
 @property NSData *data;
 @property NSString *filepath;
@@ -20,7 +20,7 @@
 
 @end
 
-@protocol FFHMetadaEditorDelegate <NSObject>
+@protocol FFHMetadataEditorDelegate <NSObject>
 
 -(void)metadataDidChange;
 

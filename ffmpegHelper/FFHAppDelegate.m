@@ -219,7 +219,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 };
 
 
-@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadaEditorDelegate, FFHSegmentListDelegate, FFHClipListDelegate, NSMenuDelegate> {
+@interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadataEditorDelegate, FFHSegmentListDelegate, FFHClipListDelegate, NSMenuDelegate> {
     IBOutlet FFHDragView *_dragView;
     IBOutlet NSTextField *_filePathTextField;
     IBOutlet NSTextField *_outputFilePathTextField;
