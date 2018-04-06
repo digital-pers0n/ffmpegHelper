@@ -209,6 +209,9 @@ NSString * const FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS
 NSString * const FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $TWOPASS $LENGTH \"$OUTPUT\"";
 
 NSString * const FFHMenuTwoPassKey = @"TwoPassEncoding";
+NSString * const FFHMenuRecentSavePathsKey = @"RecentSavePaths";
+NSString * const FFHMenuUseCustomSavePathKey = @"useCustomSavePath";
+NSString * const FFHMenuCustomSavePathKey = @"customSavePath";
 
 NSString * const FFHUserPresetPath = @"~/Library/Application Support/ffmpegHelper/userPreset.plist";
 
@@ -237,6 +240,9 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     
     FFHCommandData *_cmdOpts;
     BOOL _twoPassEncoding;
+    BOOL _useCustomSavePath;
+    NSString *_customSavePath;
+    NSMutableArray *_recentSavePaths;
     
     FFHFileInfo *_fileInfoWindow;
     FFHMetadataEditor *_metadataEditorWindow;
@@ -324,16 +330,62 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     
     NSMenu *mainMenu = [NSApp mainMenu];
     {
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         SEL action = @selector(optionsMenuItemClicked:);
         NSMenu *menu = [mainMenu itemWithTag:1000].submenu;
         NSMenuItem *item;
         item = [[NSMenuItem alloc] initWithTitle:@"Two Pass Encoding" action:action keyEquivalent:@""];
         item.tag = FFHMenuOption2PassTag;
-        _twoPassEncoding = [[NSUserDefaults standardUserDefaults] boolForKey:(NSString *)FFHMenuTwoPassKey];
+        _twoPassEncoding = [userDefaults boolForKey:(NSString *)FFHMenuTwoPassKey];
         item.state = _twoPassEncoding;
         [menu addItem:item];
         
+        item = [[NSMenuItem alloc] initWithTitle:@"Save Path" action:nil keyEquivalent:@""];
+        NSMenu *spMenu = [[NSMenu alloc] init];
+        item.submenu = spMenu;
+        [menu addItem:item];
+        {
+            item = [[NSMenuItem alloc] initWithTitle:@"Choose Custom..." action:@selector(chooseSavePath:) keyEquivalent:@""];
+            item.target = self;
+            item.tag = 200;
+            [spMenu addItem:item];
+            
+            item = [[NSMenuItem alloc] initWithTitle:@"Reset to Default" action:@selector(resetSavePath:) keyEquivalent:@""];
+            item.target = self;
+            item.tag = 201;
+            [spMenu addItem:item];
+            
+            item = [NSMenuItem separatorItem];
+            item.tag = 203;
+            [spMenu addItem:item];
 
+            NSArray *recents = [userDefaults arrayForKey:(NSString *)FFHMenuRecentSavePathsKey];
+            if (recents) {
+                _recentSavePaths =  recents.mutableCopy;
+            } else {
+                _recentSavePaths = [[NSMutableArray alloc] init];
+            }
+            for (NSString *path in recents) {
+                item = [spMenu addItemWithTitle:[path lastPathComponent] action:@selector(setSavePath:) keyEquivalent:@""];
+                item.target = self;
+                item.representedObject = path;
+                item.tag = 100;
+                item.toolTip = path;
+            }
+            _useCustomSavePath = [userDefaults boolForKey:(NSString *)FFHMenuUseCustomSavePathKey];
+            if (_useCustomSavePath) {
+                _customSavePath = [userDefaults stringForKey:(NSString *)FFHMenuCustomSavePathKey];
+            }
+            
+            item = [NSMenuItem separatorItem];
+            item.tag = 204;
+            [spMenu addItem:item];
+            
+            item = [[NSMenuItem alloc] initWithTitle:@"Clear Menu" action:@selector(clearRecentSavePaths:) keyEquivalent:@""];
+            item.target = self;
+            item.tag = 202;
+            [spMenu addItem:item];
+        }
         //action = @selector(presetsMenuItemClicked:);
         _presetsMenu = [mainMenu itemWithTag:1001].submenu;
 //        for (NSDictionary *obj in presets) {
@@ -400,8 +452,12 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [[NSUserDefaults standardUserDefaults] setBool:_twoPassEncoding forKey:(NSString *)FFHMenuTwoPassKey];
-    [[NSUserDefaults standardUserDefaults] setObject:_cmdOpts.dictionary forKey:DEFAULTS_KEY];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setBool:_twoPassEncoding forKey:(NSString *)FFHMenuTwoPassKey];
+    [userDefaults setObject:_cmdOpts.dictionary forKey:DEFAULTS_KEY];
+    [userDefaults setObject:_recentSavePaths forKey:(NSString *)FFHMenuRecentSavePathsKey];
+    [userDefaults setObject:_customSavePath forKey:(NSString *)FFHMenuCustomSavePathKey];
+    [userDefaults setBool:_useCustomSavePath forKey:(NSString *)FFHMenuUseCustomSavePathKey];
     [_presetEditor savePresets];
 }
 
@@ -509,6 +565,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         }
          filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
         _filePathTextField.stringValue = filename;
+        if (_useCustomSavePath) {
+            NSString *tmp = [filename lastPathComponent];
+            filename = [_customSavePath stringByAppendingPathComponent:tmp];
+        }
         NSString *container = _cmdOpts.container;
         time_t t = 0;
         time(&t);
@@ -756,9 +816,12 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 - (IBAction)updateOutputNameMenuItemClicked:(id)sender {
     NSString *filename = _metadataEditorWindow.filepath;
+    if (_useCustomSavePath) {
+        NSString *tmp = [filename lastPathComponent];
+        filename = [_customSavePath stringByAppendingPathComponent:tmp];
+    }
     if (filename.length) {
         filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-        _filePathTextField.stringValue = filename;
         NSString *container = _cmdOpts.container;
         time_t t = 0;
         time(&t);
@@ -801,6 +864,56 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
             break;
     }
     [self _updateCommandTextView];
+}
+
+- (void)chooseSavePath:(NSMenuItem *)sender {
+    NSString *path;
+    NSMenu *menu = sender.menu;
+    NSInteger idx = [menu indexOfItemWithTag:203] + 1;
+    
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    [openPanel setCanChooseFiles:NO];
+    [openPanel setAllowsMultipleSelection:NO];
+    [openPanel setCanChooseDirectories:YES];
+    [openPanel setCanCreateDirectories:YES];
+    
+    if ([openPanel runModal] == NSFileHandlingPanelOKButton) {
+        NSURL *url = openPanel.URL;
+        path = url.path;
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:[path lastPathComponent] action:@selector(setSavePath:) keyEquivalent:@""];
+        item.tag = 100;
+        item.target = self;
+        item.representedObject = path;
+        item.toolTip = path;
+        [menu insertItem:item atIndex:idx];
+        [_recentSavePaths insertObject:path atIndex:0];
+        _customSavePath = path;
+        _useCustomSavePath = YES;
+    }
+}
+- (void)resetSavePath:(id)sender {
+    _useCustomSavePath = NO;
+}
+- (void)clearRecentSavePaths:(NSMenuItem *)sender {
+    NSMenu *menu = sender.menu;
+    for (NSMenuItem *item in [menu.itemArray copy]) {
+        if (item.tag == 100) {
+            [_recentSavePaths removeObject:item.representedObject];
+            [menu removeItem:item];
+        }
+    }
+}
+- (void)setSavePath:(NSMenuItem *)sender {
+    NSString *path;
+    NSMenu *menu = sender.menu;
+    NSInteger idx = [menu indexOfItemWithTag:203] + 1;
+    path = [sender representedObject];
+    [menu removeItem:sender];
+    [menu insertItem:sender atIndex:idx];
+    [_recentSavePaths removeObject:path];
+    [_recentSavePaths insertObject:path atIndex:0];
+    _customSavePath = path;
+    _useCustomSavePath = YES;
 }
 
 #pragma mark - Presets Menu Actions
