@@ -95,6 +95,7 @@ static inline NSString *_getMetadata(NSString *metadata, NSUInteger *length, NSS
     NSString *rawInfo = [[NSString alloc] initWithData:outData encoding:NSUTF8StringEncoding];
     if (!rawInfo) {
         NSLog(@"%s Error: cannot convert data to string", __PRETTY_FUNCTION__);
+        _cachedMetadata.title = _filepath.lastPathComponent.stringByDeletingPathExtension;;
         return;
     }
     NSRange r1, r2 = {0, rawInfo.length}, r3;
@@ -105,7 +106,12 @@ static inline NSString *_getMetadata(NSString *metadata, NSUInteger *length, NSS
             _metadataString = [rawInfo substringWithRange:(NSRange){r1.location + r1.length + 1, r3.location - r1.length - r1.location - 1}];
             NSUInteger length = _metadataString.length;
             NSString *empty = @"";
-            _cachedMetadata.title = _getMetadata(_metadataString, &length, FFHMetadataTitleString, empty);
+            
+            NSString *title = _getMetadata(_metadataString, &length, FFHMetadataTitleString, empty);
+            if (title.length == 0) {
+                title = _filepath.lastPathComponent.stringByDeletingPathExtension;
+            }
+            _cachedMetadata.title = title;
             _cachedMetadata.artist = _getMetadata(_metadataString, &length, FFHMetadataArtistString, empty);
             _cachedMetadata.date = _getMetadata(_metadataString, &length, FFHMetadataDateString, empty);
             _cachedMetadata.comment = _getMetadata(_metadataString, &length, FFHMetadataCommentString, empty);
