@@ -563,6 +563,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
             _metadataEditorWindow.data = data;
             _fileInfoWindow.data = data;
         }
+        [_window setTitleWithRepresentedFilename:filename];
          filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
         _filePathTextField.stringValue = filename;
         if (_useCustomSavePath) {
