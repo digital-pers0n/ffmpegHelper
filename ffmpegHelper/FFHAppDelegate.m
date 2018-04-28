@@ -509,7 +509,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     _dropFileFeedbackTextField.hidden = feedback;
 }
 
-- (void)_playWithMpv:(NSString *)path {
+- (void)_openWithMpv:(NSString *)path {
     NSWorkspace *sharedWorkspace = [NSWorkspace sharedWorkspace];
     NSURL *appURL = [sharedWorkspace URLForApplicationWithBundleIdentifier:@"io.mpv"];
     if (appURL) {
@@ -633,7 +633,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                 [args addObject:arg1];
                 [args addObject:arg2];
                 [args addObject:arg3];
-                [self _playWithMpv:path];
+                [self _openWithMpv:path];
                 [args removeObject:arg1];
                 [args removeObject:arg2];
                 [args removeObject:arg3];
@@ -781,7 +781,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (IBAction)playInputMenuItemClicked:(id)sender {
      NSString *path = _inputFilePath;
     if (path.length) {
-        [self _playWithMpv:path];
+        [self _openWithMpv:path];
     } else {
         NSBeep();
     }
@@ -790,7 +790,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (IBAction)playOutputMenuItemClicked:(id)sender {
     NSString *path = _outputFilePathTextField.stringValue;
     if (path.length) {
-        [self _playWithMpv:path];
+        [self _openWithMpv:path];
     } else {
         NSBeep();
     }
@@ -807,7 +807,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         [args addObject:arg1];
         [args addObject:arg2];
         [args addObject:arg3];
-        [self _playWithMpv:path];
+        [self _openWithMpv:path];
         [args removeObject:arg1];
         [args removeObject:arg2];
         [args removeObject:arg3];
