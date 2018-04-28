@@ -156,10 +156,12 @@ NSString * const FFHLengthTimeKey = @"LengthTime";
     NSString *_timeStart;
     NSString *_timeEnd;
     NSString *_timeLength;
+    NSString *_inputFilePath;
 }
 @property NSString *timeStart;
 @property NSString *timeEnd;
 @property NSString *timeLength;
+@property NSString *inputFilePath;
 
 @end
 
@@ -172,6 +174,7 @@ NSString * const FFHLengthTimeKey = @"LengthTime";
     data.timeStart = _timeStart.copy;
     data.timeEnd = _timeEnd.copy;
     data.timeLength = _timeLength.copy;
+    data.inputFilePath = _inputFilePath.copy;
     return data;
 }
 
@@ -224,7 +227,6 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 @interface FFHAppDelegate () <FFHDragViewDelegate, FFHMetadataEditorDelegate, FFHSegmentListDelegate, FFHClipListDelegate, NSMenuDelegate> {
     IBOutlet FFHDragView *_dragView;
-    IBOutlet NSTextField *_filePathTextField;
     IBOutlet NSTextField *_outputFilePathTextField;
     IBOutlet NSTextField *_videoOptionsTextField;
     IBOutlet NSTextField *_miscOptionsTextField;
@@ -243,6 +245,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     BOOL _useCustomSavePath;
     NSString *_customSavePath;
     NSMutableArray *_recentSavePaths;
+    NSString *_inputFilePath;
     
     FFHFileInfo *_fileInfoWindow;
     FFHMetadataEditor *_metadataEditorWindow;
@@ -272,6 +275,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 - (IBAction)playSegmentMenuItemClicked:(id)sender;
 - (IBAction)editMetadataMenuItemClicked:(id)sender;
 - (IBAction)updateOutputNameMenuItemClicked:(id)sender;
+- (IBAction)revealOutputFileMenuItemClicked:(id)sender;
 
 
 @property (weak) IBOutlet NSWindow *window;
@@ -484,7 +488,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                          @"LENGTH=\"-t %@\"\n"
                          @"TWOPASS=\"%@\"\n"
                          @"%@\n",
-                         _filePathTextField.stringValue, _outputFilePathTextField.stringValue, _cmdOpts.videoOptions,
+                         _inputFilePath, _outputFilePathTextField.stringValue, _cmdOpts.videoOptions,
                          _cmdOpts.audioOptions, _cmdOpts.otherOptions, _cmdOpts.miscOptions, _cmdOpts.timeStart,
                          _cmdOpts.timeLength, twopass, string];
     _commandTextView.string = [NSString stringWithFormat:command, _metadataEditorWindow.metadata];
@@ -565,7 +569,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         }
         [_window setTitleWithRepresentedFilename:filename];
          filename = [filename stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-        _filePathTextField.stringValue = filename;
+        _inputFilePath = filename;
         if (_useCustomSavePath) {
             NSString *tmp = [filename lastPathComponent];
             filename = [_customSavePath stringByAppendingPathComponent:tmp];
@@ -619,7 +623,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     switch (flags) {
         case NSAlternateKeyMask:
         {
-            NSString *path = _filePathTextField.stringValue;
+            NSString *path = _inputFilePath;
             if (path.length) {
                 NSMutableArray *args = _mpvOptions[NSWorkspaceLaunchConfigurationArguments];
                 float start = item.startTime, end = item.endTime;
@@ -652,7 +656,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 
 - (FFHClipItem *)addNewClipToList:(FFHClipList *)list {
     FFHClipItem *item = [[FFHClipItem alloc] init];
-    item.inputFilePath = _filePathTextField.stringValue;
+    item.inputFilePath = _inputFilePath;
     item.outputFilePath = _outputFilePathTextField.stringValue;
     item.commandData = _cmdOpts.copy;
     item.metadataString = _metadataEditorWindow.metadata;
@@ -697,7 +701,8 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
             break;
         default:
             _cmdOpts = item.commandData.copy;
-            _filePathTextField.stringValue = item.inputFilePath;
+            _inputFilePath = item.inputFilePath;
+            [_window setTitleWithRepresentedFilename:_inputFilePath];
             _outputFilePathTextField.stringValue = item.outputFilePath;
             _videoOptionsTextField.stringValue = _cmdOpts.videoOptions;
             _audioOptionsTextField.stringValue = _cmdOpts.audioOptions;
@@ -774,7 +779,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (IBAction)playInputMenuItemClicked:(id)sender {
-     NSString *path = _filePathTextField.stringValue;
+     NSString *path = _inputFilePath;
     if (path.length) {
         [self _playWithMpv:path];
     } else {
@@ -792,7 +797,7 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (IBAction)playSegmentMenuItemClicked:(id)sender {
-    NSString *path = _filePathTextField.stringValue;
+    NSString *path = _inputFilePath;
     if (path.length) {
         NSMutableArray *args = _mpvOptions[NSWorkspaceLaunchConfigurationArguments];
         float start = _startTimeTextField.floatValue, end = _endTimeTextField.floatValue;
@@ -841,6 +846,12 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
         }
         _outputFilePathTextField.stringValue = filename;
         [self _updateCommandTextView];
+    }
+}
+
+- (IBAction)revealOutputFileMenuItemClicked:(id)sender {
+    if (![[NSWorkspace sharedWorkspace] selectFile:_outputFilePathTextField.stringValue inFileViewerRootedAtPath:@""]) {
+        NSBeep();
     }
 }
 

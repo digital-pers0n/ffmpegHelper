@@ -21,7 +21,6 @@
                 <outlet property="_dragView" destination="wbF-9m-xe4" id="ZlJ-N6-KR1"/>
                 <outlet property="_dropFileFeedbackTextField" destination="Psn-6B-uBM" id="iA9-Rd-I57"/>
                 <outlet property="_endTimeTextField" destination="jrD-eK-fp4" id="27N-rW-Knx"/>
-                <outlet property="_filePathTextField" destination="6wf-Ml-wFb" id="Vsx-W7-dqR"/>
                 <outlet property="_lengthTimeTextField" destination="XmH-Ms-X5K" id="N61-99-kYu"/>
                 <outlet property="_miscOptionsTextField" destination="bSq-9T-0rh" id="IbT-zc-eXr"/>
                 <outlet property="_otherOptionsTextField" destination="eSx-uW-rNY" id="Mbh-6o-mh7"/>
@@ -131,6 +130,12 @@
                             <menuItem title="Update Output Name" keyEquivalent="u" id="Qnf-n6-g3X">
                                 <connections>
                                     <action selector="updateOutputNameMenuItemClicked:" target="Voe-Tx-rLC" id="YcF-A1-AIk"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Reveal Output File" keyEquivalent="f" id="exj-K9-FHE">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="revealOutputFileMenuItemClicked:" target="Voe-Tx-rLC" id="cWm-S6-6d6"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="iMY-uy-C3N"/>
@@ -588,7 +593,7 @@
                                     </textField>
                                     <textField horizontalHuggingPriority="1" verticalHuggingPriority="1" preferredMaxLayoutWidth="600" translatesAutoresizingMaskIntoConstraints="NO" id="6wf-Ml-wFb">
                                         <rect key="frame" x="18" y="199" width="604" height="14"/>
-                                        <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" title="File Path" id="iZ3-Y4-XgU">
+                                        <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" title="output:" id="iZ3-Y4-XgU">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -707,6 +712,7 @@
                     <constraint firstItem="wbF-9m-xe4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="tc0-14-xbd"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="396" y="284"/>
         </window>
     </objects>
 </document>
