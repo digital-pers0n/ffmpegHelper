@@ -208,8 +208,8 @@ NSString * const FFHLengthTimeKey = @"LengthTime";
 
 #pragma mark - FFHAppDelegate Class
 
-NSString * const FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS -pass 1 $LENGTH -an -f null -";
-NSString * const FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $TWOPASS $LENGTH \"$OUTPUT\"";
+NSString * const FFHTwoPassCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $PASSONE $LENGTH -f $FMT -y /dev/null";
+NSString * const FFHCommandString = @"ffmpeg $START -i \"$INPUT\" $VFLAGS $AFLAGS $OFLAGS $MFLAGS %@ $PASSTWO $LENGTH \"$OUTPUT\"";
 
 NSString * const FFHMenuTwoPassKey = @"TwoPassEncoding";
 NSString * const FFHMenuRecentSavePathsKey = @"RecentSavePaths";
@@ -470,9 +470,10 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
 }
 
 - (void)_updateCommandTextView {
-    NSString *string, *twopass = @"";
+    NSString *string, *passone = @"", *passtwo = @"";
     if (_twoPassEncoding) {
-        twopass = @"-pass 2";
+        passone = @"-pass 1";
+        passtwo = @"-pass 2";
         string = [NSString stringWithFormat:@"%@\n%@\n", FFHTwoPassCommandString, FFHCommandString];
     } else {
         string = [NSString stringWithFormat:@"%@\n", FFHCommandString];
@@ -486,11 +487,13 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                          @"MFLAGS=\"%@\"\n"
                          @"START=\"-ss %@\"\n"
                          @"LENGTH=\"-t %@\"\n"
-                         @"TWOPASS=\"%@\"\n"
+                         @"FMT=\"%@\"\n"
+                         @"PASSONE=\"%@\"\n"
+                         @"PASSTWO=\"%@\"\n"
                          @"%@\n",
                          _inputFilePath, _outputFilePathTextField.stringValue, _cmdOpts.videoOptions,
                          _cmdOpts.audioOptions, _cmdOpts.otherOptions, _cmdOpts.miscOptions, _cmdOpts.timeStart,
-                         _cmdOpts.timeLength, twopass, string];
+                         _cmdOpts.timeLength, _cmdOpts.container, passone, passtwo, string];
     _commandTextView.string = [NSString stringWithFormat:command, _metadataEditorWindow.metadata];
 }
 
@@ -662,15 +665,17 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
     item.metadataString = _metadataEditorWindow.metadata;
     return item;
 }
+
 - (void)clipList:(FFHClipList *)list itemClicked:(FFHClipItem *)item {
     NSEventModifierFlags flags = [NSEvent modifierFlags];
     switch (flags) {
         case NSAlternateKeyMask:
         {
-            NSString *string, *twopass = @"";
+            NSString *string, *passone = @"", *passtwo = @"";
             FFHCommandData *cmdData = item.commandData;
             if (_twoPassEncoding) {
-                twopass = @"-pass 2";
+                passone = @"-pass 1";
+                passtwo = @"-pass 2";
                 string = [NSString stringWithFormat:@"%@\n%@\n", FFHTwoPassCommandString, FFHCommandString];
             } else {
                 string = [NSString stringWithFormat:@"%@\n", FFHCommandString];
@@ -684,11 +689,13 @@ typedef NS_ENUM(NSUInteger, FFHMenuOptionTag) {
                                  @"MFLAGS=\"%@\"\n"
                                  @"START=\"-ss %@\"\n"
                                  @"LENGTH=\"-t %@\"\n"
-                                 @"TWOPASS=\"%@\"\n"
+                                 @"FMT=\"%@\"\n"
+                                 @"PASSONE=\"%@\"\n"
+                                 @"PASSTWO=\"%@\"\n"
                                  @"%@\n",
                                  item.inputFilePath, item.outputFilePath, cmdData.videoOptions,
                                  cmdData.audioOptions, cmdData.otherOptions, cmdData.miscOptions, cmdData.timeStart,
-                                 cmdData.timeLength, twopass, string];
+                                 cmdData.timeLength, cmdData.container, passone, passtwo, string];
             [_convertScript replaceCharactersInRange:NSMakeRange(0, _convertScript.length)
                                           withString:[NSString stringWithFormat:command, item.metadataString]];
             [_convertScript writeToFile:_scriptPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
