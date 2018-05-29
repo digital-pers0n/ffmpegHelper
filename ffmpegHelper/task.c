@@ -96,8 +96,8 @@ int task_launch(Task *task) {
     }
     
     // Read from pipes
-    size_t buf_len = 1024 + 1;
-    char *buffer = (char *) malloc(buf_len * sizeof(char));
+    size_t buf_len = 1024;
+    char *buffer = (char *) malloc(buf_len + 1 * sizeof(char));
     bool stdout_empty = false, stderr_empty = false;
     size_t bytes_read = 0;
     struct pollfd plist[] = { { stdout_pipe[0], POLLIN }, { stderr_pipe[0], POLLIN } };
@@ -117,7 +117,7 @@ int task_launch(Task *task) {
             puts("------------------------------");
 #endif
         } else if ( plist[1].revents &POLLIN && !stderr_empty) {
-            bytes_read = read(stderr_pipe[0], buffer, 1024);
+            bytes_read = read(stderr_pipe[0], buffer, buf_len);
             if (!bytes_read) {
                 stderr_empty = true;
                 continue;
