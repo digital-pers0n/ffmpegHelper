@@ -108,7 +108,7 @@ int task_launch(Task *task) {
                 stdout_empty = true;
                 continue;
             }
-            for (long i = 0; i < bytes_read; i++) {
+            for (size_t i = 0; i < bytes_read; i++) {
                 output_add(&(task->output), buffer[i]);
             }
 #ifdef DEBUG
@@ -122,7 +122,7 @@ int task_launch(Task *task) {
                 stderr_empty = true;
                 continue;
             }
-            for (long i = 0; i < bytes_read; i++) {
+            for (size_t i = 0; i < bytes_read; i++) {
                 output_add(&(task->output), buffer[i]);
             }
 #ifdef DEBUG
