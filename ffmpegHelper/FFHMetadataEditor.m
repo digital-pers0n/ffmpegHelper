@@ -148,8 +148,11 @@ static inline NSString *_getMetadata(NSString *metadata, NSUInteger *length, NSS
                         @"-metadata artist=\"%@\" "
                         @"-metadata date=\"%@\" "
                         @"-metadata comment=\"%@\"",
-                        _cachedMetadata.title, _cachedMetadata.artist,
-                        _cachedMetadata.date, _cachedMetadata.comment];
+                        [_cachedMetadata.title stringByReplacingOccurrencesOfString:@"\"" withString:@"'"],
+                        _cachedMetadata.artist,
+                        _cachedMetadata.date,
+                        [_cachedMetadata.comment stringByReplacingOccurrencesOfString:@"\"" withString:@"'"]
+                        ];
     return result;
 }
 
